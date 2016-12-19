@@ -1,5 +1,5 @@
 .PHONY: all static dynamic clean clean_deps clean_objects clean_targets \
-   		install test check
+   		install includes test check
 
 PREFIX ?= /usr/local
 
@@ -10,6 +10,7 @@ TESTS_DIR = tests
 SRC_DIR = src
 OBJ_DIR = obj
 DEP_DIR = .dep
+INC_DIR = $(BUILD_DIR)/include
 
 # Additional build configuration
 
@@ -22,6 +23,7 @@ LDLIBS  +=
 # Dynamically get the sources/objects/tests
 
 SOURCES = $(wildcard $(SRC_DIR)/**/*.c $(SRC_DIR)/*.c)
+HEADERS = $(wildcard $(SRC_DIR)/**/*.h $(SRC_DIR)/*.h)
 TESTS   = $(patsubst %.c,%,$(wildcard $(TESTS_DIR)/*_test.c))
 TARGET  = $(BUILD_DIR)/lib$(NAME)
 
@@ -35,9 +37,11 @@ SO_DEP_DIR = $(DEP_DIR)/dynamic
 SO_OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(SO_OBJ_DIR)/%.o,$(SOURCES))
 SO_TARGET  = $(TARGET).so
 
+INC_HEADERS = $(patsubst $(SRC_DIR)/%.h,$(INC_DIR)/%.h,$(HEADERS))
+
 # Create directories to prevent "cannot create file" errors
 
-$(shell mkdir -p $(BUILD_DIR) $(SRC_DIR))
+$(shell mkdir -p $(BUILD_DIR) $(SRC_DIR) $(INC_DIR))
 $(shell mkdir -p $(patsubst $(SRC_DIR)%,$(AR_DEP_DIR)%,$(dir $(SOURCES))))
 $(shell mkdir -p $(patsubst $(SRC_DIR)%,$(SO_DEP_DIR)%,$(dir $(SOURCES))))
 $(shell mkdir -p $(dir $(AR_OBJECTS) $(SO_OBJECTS)))
@@ -64,6 +68,12 @@ $(SO_TARGET): CFLAGS  += -fPIC
 $(SO_TARGET): LDFLAGS += -shared
 $(SO_TARGET): $(SO_OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+includes: $(INC_HEADERS)
+
+$(INC_DIR)/%.h : $(SRC_DIR)/%.h
+	@mkdir -p $(dir $@)
+	@cp $< $@
 
 # Clean dependencies, objects, or the main target
 
