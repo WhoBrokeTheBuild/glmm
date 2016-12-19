@@ -1,6 +1,6 @@
+#include <check.h>
 #include <glmm/glmm.h>
 #include <stdlib.h>
-#include <check.h>
 
 START_TEST(test_vec2_init)
 {
@@ -20,7 +20,7 @@ START_TEST(test_vec2_eq)
 
     a.x = b.x = 1;
     a.y = b.y = 2;
-    
+
     ck_assert(glmm_vec2_eq(&a, &b));
 
     a.x = 3;
@@ -78,8 +78,8 @@ END_TEST
 
 Suite* vec2_suite()
 {
-    Suite *s;
-    TCase *tc_core;
+    Suite* s;
+    TCase* tc_core;
 
     s = suite_create("vec2");
 
@@ -97,8 +97,8 @@ Suite* vec2_suite()
 int main(void)
 {
     int num_failed;
-    Suite *s;
-    SRunner *sr;
+    Suite* s;
+    SRunner* sr;
 
     s = vec2_suite();
     sr = srunner_create(s);

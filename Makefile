@@ -1,5 +1,5 @@
 .PHONY: all static dynamic clean clean_deps clean_objects clean_targets \
-   		install includes test check
+   		install format includes test check
 
 PREFIX ?= /usr/local
 
@@ -18,7 +18,7 @@ NAME = glmm
 
 CFLAGS  += -g -Wall -Wextra -std=c11 -I$(SRC_DIR)
 LDFLAGS += -L$(BUILD_DIR)
-LDLIBS  += 
+LDLIBS  +=
 
 # Dynamically get the sources/objects/tests
 
@@ -77,13 +77,13 @@ $(INC_DIR)/%.h : $(SRC_DIR)/%.h
 
 # Clean dependencies, objects, or the main target
 
-clean: 
+clean:
 	rm -rf $(DEP_DIR) $(OBJ_DIR) $(BUILD_DIR)
 
 clean_deps:
 	rm -rf $(DEP_DIR)
 
-clean_objects: 
+clean_objects:
 	rm -f $(AR_OBJECTS) $(SO_TARGETS)
 
 clean_targets:
@@ -94,6 +94,11 @@ clean_targets:
 install: all
 	install -d $(DESTDIR)/$(PREFIX)/lib/
 	install $(TARGET) $(DESTDIR)/$(PREFIX)/lib/
+
+# Format code
+
+format:
+	clang-format -i $(SOURCES) $(HEADERS)
 
 # Builds test executables
 
