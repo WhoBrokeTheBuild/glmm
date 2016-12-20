@@ -4,3 +4,4 @@ Standard: Cpp11
 BreakBeforeBraces: Allman
 IndentWidth: 4
 UseTab: Never
+PointerBindsToType: false
