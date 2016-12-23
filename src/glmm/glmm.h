@@ -3,6 +3,6 @@
 
 #define GLMM_VER_STRING "0.0.1"
 
-#include "vec2.h"
+#include "vec.h"
 
 #endif // GLMM_H
