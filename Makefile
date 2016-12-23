@@ -92,8 +92,8 @@ clean_targets:
 # Install to system
 
 install: all
-	install -d $(DESTDIR)/$(PREFIX)/lib/
-	install $(TARGET) $(DESTDIR)/$(PREFIX)/lib/
+	install -d $(BUILD_DIR)/include/ $(PREFIX)/include/
+	install -d $(BUILD_DIR)/lib64/ $(PREFIX)/lib64/
 
 # Format code
 
