@@ -48,7 +48,7 @@ $(shell mkdir -p $(dir $(AR_OBJECTS) $(SO_OBJECTS)))
 
 # Build the main targets
 
-all: $(AR_TARGET) $(SO_TARGET)
+all: $(AR_TARGET) $(SO_TARGET) includes
 
 $(AR_OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 $(AR_OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(AR_DEP_DIR)/%.d

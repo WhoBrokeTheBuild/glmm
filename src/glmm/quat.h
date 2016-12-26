@@ -3,15 +3,19 @@
 
 #include "vec.h"
 
-typedef glmm_vec4f glmm_quat;
-#define glmm_vec4f_init glmm_quat_init
-#define glmm_vec4f_print glmm_quat_print
+typedef glmm_vec4f_t glmm_quat_t;
+#define glmm_quat_init glmm_vec4f_init
+#define glmm_quat_copy glmm_vec4f_copy
+#define glmm_quat_norm glmm_vec4f_norm
+#define glmm_quat_print glmm_vec4f_print
 
 #ifndef GLMM_NO_SHORT_DEFINES
 
-#define glmm_quat quat
-#define glmm_quat_init quat_init
-#define glmm_quat_print quat_print
+#define quat_t glmm_quat_t
+#define quat_init glmm_quat_init
+#define quat_copy glmm_quat_copy
+#define quat_norm glmm_quat_norm
+#define quat_print glmm_quat_print
 
 #endif // GLMM_NO_SHORT_DEFINES
 

@@ -4,7 +4,7 @@
 
 START_TEST(test_vec2f_init)
 {
-    glmm_vec2f a;
+    glmm_vec2f_t a;
     glmm_vec2f_init(a);
 
     ck_assert(a[0] == 0);
@@ -14,7 +14,7 @@ END_TEST
 
 START_TEST(test_vec2i_init)
 {
-    glmm_vec2i a;
+    glmm_vec2i_t a;
     glmm_vec2i_init(a);
 
     ck_assert(a[0] == 0);
@@ -24,7 +24,7 @@ END_TEST
 
 START_TEST(test_vec2u_init)
 {
-    glmm_vec2u a;
+    glmm_vec2u_t a;
     glmm_vec2u_init(a);
 
     ck_assert(a[0] == 0);
@@ -34,7 +34,7 @@ END_TEST
 
 START_TEST(test_vec2f_eq)
 {
-    glmm_vec2f a, b;
+    glmm_vec2f_t a, b;
     glmm_vec2f_init(a);
     glmm_vec2f_init(b);
 
@@ -56,7 +56,7 @@ END_TEST
 
 START_TEST(test_vec2i_eq)
 {
-    glmm_vec2i a, b;
+    glmm_vec2i_t a, b;
     glmm_vec2i_init(a);
     glmm_vec2i_init(b);
 
@@ -78,7 +78,7 @@ END_TEST
 
 START_TEST(test_vec2u_eq)
 {
-    glmm_vec2u a, b;
+    glmm_vec2u_t a, b;
     glmm_vec2u_init(a);
     glmm_vec2u_init(b);
 
@@ -100,7 +100,7 @@ END_TEST
 
 START_TEST(test_vec2f_add)
 {
-    glmm_vec2f a, b;
+    glmm_vec2f_t a, b;
     glmm_vec2f_init(a);
     glmm_vec2f_init(b);
 
@@ -121,7 +121,7 @@ END_TEST
 
 START_TEST(test_vec2i_add)
 {
-    glmm_vec2i a, b;
+    glmm_vec2i_t a, b;
     glmm_vec2i_init(a);
     glmm_vec2i_init(b);
 
@@ -142,7 +142,7 @@ END_TEST
 
 START_TEST(test_vec2u_add)
 {
-    glmm_vec2u a, b;
+    glmm_vec2u_t a, b;
     glmm_vec2u_init(a);
     glmm_vec2u_init(b);
 
@@ -163,7 +163,7 @@ END_TEST
 
 START_TEST(test_vec2f_sub)
 {
-    glmm_vec2f a, b;
+    glmm_vec2f_t a, b;
     glmm_vec2f_init(a);
     glmm_vec2f_init(b);
 
@@ -184,7 +184,7 @@ END_TEST
 
 START_TEST(test_vec2i_sub)
 {
-    glmm_vec2i a, b;
+    glmm_vec2i_t a, b;
     glmm_vec2i_init(a);
     glmm_vec2i_init(b);
 
@@ -205,7 +205,7 @@ END_TEST
 
 START_TEST(test_vec2u_sub)
 {
-    glmm_vec2u a, b;
+    glmm_vec2u_t a, b;
     glmm_vec2u_init(a);
     glmm_vec2u_init(b);
 
