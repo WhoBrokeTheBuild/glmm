@@ -48,33 +48,44 @@ GLMM_MAT(2, 2);
 GLMM_MAT(3, 3);
 GLMM_MAT(4, 4);
 
-static inline void glmm_look_at(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
+static inline void glmm_look_at_rh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
 {
-    float coord_mod;
     glmm_vec3f_t f, s, u;
 
-    glmm_vec3f_sub(f, eye, center);
+    glmm_vec3f_sub(f, center, eye);
     glmm_vec3f_norm(f);
-
-#if GLMM_COORDINATE_SYSTEM == GLMM_LEFT_HANDED
-
-    coord_mod = -1.0f;
-
+    
     glmm_vec3f_cross(s, up, f);
     glmm_vec3f_norm(s);
 
     glmm_vec3f_cross(u, f, s);
+    
+    glmm_mat4x4_eye(result);
+    result[0][0] = s[0];
+    result[1][0] = s[1];
+    result[2][0] = s[2];
+    result[0][1] = u[0];
+    result[1][1] = u[1];
+    result[2][1] = u[2];
+    result[0][2] = -f[0];
+    result[1][2] = -f[1];
+    result[2][2] = -f[2];
+    result[3][0] = -glmm_vec3f_dot(s, eye);
+    result[3][1] = -glmm_vec3f_dot(u, eye);
+    result[3][2] = -glmm_vec3f_dot(f, eye);
+}
 
-#else // GLMM_RIGHT_HANDED
+static inline void glmm_look_at_lh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
+{
+    glmm_vec3f_t f, s, u;
 
-    coord_mod = 1.0f;
+    glmm_vec3f_sub(f, center, eye);
+    glmm_vec3f_norm(f);
 
     glmm_vec3f_cross(s, f, up);
     glmm_vec3f_norm(s);
 
     glmm_vec3f_cross(u, s, f);
-
-#endif // GLMM_COORDINATE_SYSTEM == GLMM_LEFT_HANDED
 
     glmm_mat4x4_eye(result);
     result[0][0] = s[0];
@@ -88,8 +99,15 @@ static inline void glmm_look_at(glmm_mat4x4_t result, const glmm_vec3f_t eye, co
     result[2][2] = f[2];
     result[3][0] = -glmm_vec3f_dot(s, eye);
     result[3][1] = -glmm_vec3f_dot(u, eye);
-    result[3][2] = glmm_vec3f_dot(f, eye) * coord_mod;
+    result[3][2] = glmm_vec3f_dot(f, eye);
 }
+
+#if GLMM_COORDINATE_SYSTEM == GLMM_LEFT_HANDED
+#define glmm_look_at glmm_look_at_lh
+#else
+#define glmm_look_at glmm_look_at_rh
+#endif // GLMM_COORDINATE_SYSTEM == GLMM_LEFT_HANDED
+
 
 #ifndef GLMM_NO_SHORT_DEFINES
 
