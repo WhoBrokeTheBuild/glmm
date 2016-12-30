@@ -4,10 +4,15 @@
 #include "vec.h"
 
 typedef glmm_vec4f_t glmm_quat_t;
-#define glmm_quat_init glmm_vec4f_init
 #define glmm_quat_copy glmm_vec4f_copy
 #define glmm_quat_norm glmm_vec4f_norm
 #define glmm_quat_print glmm_vec4f_print
+
+static inline void glmm_quat_init(glmm_quat_t this)
+{
+    this[0] = this[1] = this[2] = 0.0f;
+    this[3] = 1.0f;
+}
 
 #ifndef GLMM_NO_SHORT_DEFINES
 
