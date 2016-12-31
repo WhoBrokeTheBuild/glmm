@@ -14,6 +14,9 @@
 
 #define GLMM_PI 3.1415926535
 
+#define GLMM_RAD(N) (N * (GLMM_PI / 180))
+#define GLMM_DEG(N) (N * (180 / GLMM_PI))
+
 #include "mat.h"
 #include "quat.h"
 #include "vec.h"

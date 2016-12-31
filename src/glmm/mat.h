@@ -7,18 +7,13 @@
 #define GLMM_MAT(W, H)                                                                                         \
     typedef glmm_vec##W##f_t glmm_mat##W##x##H##_t[H];                                                         \
                                                                                                                \
-    static inline void glmm_mat##W##x##H##_init(glmm_mat##W##x##H##_t this)                                    \
-    {                                                                                                          \
-        memset(this, 0, sizeof(glmm_mat##W##x##H##_t));                                                        \
-    }                                                                                                          \
-                                                                                                               \
-    static inline void glmm_mat##W##x##H##_eye(glmm_mat##W##x##H##_t this)                                     \
+    static inline void glmm_mat##W##x##H##_init(glmm_mat##W##x##H##_t this, float value)                       \
     {                                                                                                          \
         int i, j;                                                                                              \
         for (i = 0; i < H; ++i)                                                                                \
             for (j = 0; j < W; ++j)                                                                            \
             {                                                                                                  \
-                this[i][j] = (i == j ? 1.0f : 0.0f);                                                           \
+                this[i][j] = (i == j ? value : 0.0f);                                                          \
             }                                                                                                  \
     }                                                                                                          \
                                                                                                                \
@@ -48,34 +43,44 @@ GLMM_MAT(2, 2);
 GLMM_MAT(3, 3);
 GLMM_MAT(4, 4);
 
-static inline void glmm_look_at_rh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
+static inline void glmm_mat4x4_mul(glmm_mat4x4_t result, const glmm_mat4x4_t left, const glmm_mat4x4_t right)
 {
-    glmm_vec3f_t f, s, u;
+    int i;
+    glmm_mat4x4_t mat;
+    glmm_vec4f_t tmp1, tmp2, tmp3, tmp4;
 
-    glmm_vec3f_sub(f, center, eye);
-    glmm_vec3f_norm(f);
-    
-    glmm_vec3f_cross(s, up, f);
-    glmm_vec3f_norm(s);
-
-    glmm_vec3f_cross(u, f, s);
-    
-    glmm_mat4x4_eye(result);
-    result[0][0] = s[0];
-    result[1][0] = s[1];
-    result[2][0] = s[2];
-    result[0][1] = u[0];
-    result[1][1] = u[1];
-    result[2][1] = u[2];
-    result[0][2] = -f[0];
-    result[1][2] = -f[1];
-    result[2][2] = -f[2];
-    result[3][0] = -glmm_vec3f_dot(s, eye);
-    result[3][1] = -glmm_vec3f_dot(u, eye);
-    result[3][2] = -glmm_vec3f_dot(f, eye);
+    glmm_mat4x4_init(mat, 0.0f);
+    for (i = 0; i < 4; ++i)
+    {
+        glmm_vec4f_mul_scalar(tmp1, left[0], right[i][0]);
+        glmm_vec4f_mul_scalar(tmp2, left[1], right[i][1]);
+        glmm_vec4f_mul_scalar(tmp3, left[2], right[i][2]);
+        glmm_vec4f_mul_scalar(tmp4, left[3], right[i][3]);
+        glmm_vec4f_add(tmp1, tmp1, tmp2);
+        glmm_vec4f_add(tmp1, tmp1, tmp3);
+        glmm_vec4f_add(tmp1, tmp1, tmp4);
+        glmm_vec4f_copy(mat[i], tmp1);
+    }
+    glmm_mat4x4_copy(result, mat);
 }
 
-static inline void glmm_look_at_lh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
+static inline void glmm_mat4x4_translate(glmm_mat4x4_t this, const glmm_vec3f_t vec)
+{
+    int i;
+    glmm_vec4f_t tmp;
+    glmm_vec4f_init(tmp, 0.0f);
+    for (i = 0; i < 3; ++i)
+    {
+        tmp[0] += this[i][0] * vec[i];
+        tmp[1] += this[i][1] * vec[i];
+        tmp[2] += this[i][2] * vec[i];
+        tmp[3] += this[i][3];
+    }
+
+    glmm_vec4f_copy(this[3], tmp);
+}
+
+static inline void glmm_look_at_rh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
 {
     glmm_vec3f_t f, s, u;
 
@@ -87,7 +92,34 @@ static inline void glmm_look_at_lh(glmm_mat4x4_t result, const glmm_vec3f_t eye,
 
     glmm_vec3f_cross(u, s, f);
 
-    glmm_mat4x4_eye(result);
+    glmm_mat4x4_init(result, 1.0f);
+    result[0][0] = s[0];
+    result[1][0] = s[1];
+    result[2][0] = s[2];
+    result[0][1] = u[0];
+    result[1][1] = u[1];
+    result[2][1] = u[2];
+    result[0][2] = -f[0];
+    result[1][2] = -f[1];
+    result[2][2] = -f[2];
+    result[3][0] = -glmm_vec3f_dot(s, eye);
+    result[3][1] = -glmm_vec3f_dot(u, eye);
+    result[3][2] = glmm_vec3f_dot(f, eye);
+}
+
+static inline void glmm_look_at_lh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
+{
+    glmm_vec3f_t f, s, u;
+
+    glmm_vec3f_sub(f, center, eye);
+    glmm_vec3f_norm(f);
+
+    glmm_vec3f_cross(s, up, f);
+    glmm_vec3f_norm(s);
+
+    glmm_vec3f_cross(u, f, s);
+
+    glmm_mat4x4_init(result, 1.0f);
     result[0][0] = s[0];
     result[1][0] = s[1];
     result[2][0] = s[2];
@@ -99,15 +131,56 @@ static inline void glmm_look_at_lh(glmm_mat4x4_t result, const glmm_vec3f_t eye,
     result[2][2] = f[2];
     result[3][0] = -glmm_vec3f_dot(s, eye);
     result[3][1] = -glmm_vec3f_dot(u, eye);
-    result[3][2] = glmm_vec3f_dot(f, eye);
+    result[3][2] = -glmm_vec3f_dot(f, eye);
+}
+
+static inline void glmm_perspective_rh(glmm_mat4x4_t result, float aspect, float near, float far, float fov)
+{
+    //CHECK(abs(aspect - EPSILON) > 0, "Bad aspect?")
+
+    float tan_half_fov = tanf(fov * 0.5f);
+
+    glmm_mat4x4_init(result, 0.0f);
+    result[0][0] = 1.0f / (aspect * tan_half_fov);
+    result[1][1] = 1.0f / tan_half_fov;
+    result[2][3] = -1.0f;
+
+    // #if clip space?
+    // result[2][2] = far / (near - far);
+    // result[3][2] = -(far * near) / (far - near);
+    // #else
+    result[2][2] = -(far + near) / (far - near);
+    result[3][2] = -(2.0f * far * near) / (far - near);
+    // #endif
+}
+
+static inline void glmm_perspective_lh(glmm_mat4x4_t result, float aspect, float near, float far, float fov)
+{
+    //CHECK(abs(aspect - EPSILON) > 0, "Bad aspect?");
+
+    float tan_half_fov = tanf(fov * 0.5f);
+
+    glmm_mat4x4_init(result, 0.0f);
+    result[0][0] = 1.0f / (aspect * tan_half_fov);
+    result[1][1] = 1.0f / tan_half_fov;
+    result[2][3] = 1.0f;
+
+    // #if clip space?
+    // result[2][2] = far / (far - near);
+    // result[3][2] = -(far * near) / (far - near);
+    // #else
+    result[2][2] = (far + near) / (far - near);
+    result[3][2] = -(2.0f * far * near) / (far - near);
+    // #endif
 }
 
 #if GLMM_COORDINATE_SYSTEM == GLMM_LEFT_HANDED
 #define glmm_look_at glmm_look_at_lh
+#define glmm_perspective glmm_perspective_lh
 #else
 #define glmm_look_at glmm_look_at_rh
+#define glmm_perspective glmm_perspective_rh
 #endif // GLMM_COORDINATE_SYSTEM == GLMM_LEFT_HANDED
-
 
 #ifndef GLMM_NO_SHORT_DEFINES
 
@@ -125,8 +198,8 @@ static inline void glmm_look_at_lh(glmm_mat4x4_t result, const glmm_vec3f_t eye,
 #define mat4x4_init glmm_mat4x4_init
 #define mat4x4_copy glmm_mat4x4_copy
 #define mat4x4_print glmm_mat4x4_print
-
-#define look_at glmm_look_at
+#define mat4x4_mul glmm_mat4x4_mul
+#define mat4x4_translate glmm_mat4x4_translate
 
 #endif // GLMM_NO_SHORT_DEFINES
 
