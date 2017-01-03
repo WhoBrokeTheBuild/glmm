@@ -5,100 +5,100 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define GLMM_VEC(N, ID, TYPE, FMT)                                                                                                         \
-    typedef TYPE glmm_vec##N##ID##_t[N];                                                                                                   \
-                                                                                                                                           \
-    static inline void glmm_vec##N##ID##_init(glmm_vec##N##ID##_t this, TYPE value)                                                        \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            this[i] = value;                                                                                                               \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline bool glmm_vec##N##ID##_eq(const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right)                               \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            if (left[i] != right[i])                                                                                                       \
-                return false;                                                                                                              \
-        return true;                                                                                                                       \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline void glmm_vec##N##ID##_add(glmm_vec##N##ID##_t result, const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right)  \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            result[i] = left[i] + right[i];                                                                                                \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline void glmm_vec##N##ID##_sub(glmm_vec##N##ID##_t result, const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right)  \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            result[i] = left[i] - right[i];                                                                                                \
-    }                                                                                                                                      \
-                                                                                                                                           \
+#define GLMM_VEC(N, ID, TYPE, FMT)                                                                                                        \
+    typedef TYPE glmm_vec##N##ID##_t[N];                                                                                                  \
+                                                                                                                                          \
+    static inline void glmm_vec##N##ID##_init(glmm_vec##N##ID##_t this, TYPE value)                                                       \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            this[i] = value;                                                                                                              \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline bool glmm_vec##N##ID##_eq(const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right)                              \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            if (left[i] != right[i])                                                                                                      \
+                return false;                                                                                                             \
+        return true;                                                                                                                      \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline void glmm_vec##N##ID##_add(glmm_vec##N##ID##_t result, const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right) \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            result[i] = left[i] + right[i];                                                                                               \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline void glmm_vec##N##ID##_sub(glmm_vec##N##ID##_t result, const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right) \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            result[i] = left[i] - right[i];                                                                                               \
+    }                                                                                                                                     \
+                                                                                                                                          \
     static inline void glmm_vec##N##ID##_mul(glmm_vec##N##ID##_t result, const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right) \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            result[i] = left[i] * right[i];                                                                                                \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline void glmm_vec##N##ID##_mul_scalar(glmm_vec##N##ID##_t result, const glmm_vec##N##ID##_t left, TYPE right)                \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            result[i] = left[i] * right;                                                                                                   \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline void glmm_vec##N##ID##_copy(glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                                   \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            this[i] = other[i];                                                                                                            \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline TYPE glmm_vec##N##ID##_len(glmm_vec##N##ID##_t this)                                                                     \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        TYPE sum = 0;                                                                                                                      \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            sum += this[i] * this[i];                                                                                                      \
-                                                                                                                                           \
-        return sqrt(sum);                                                                                                                  \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline void glmm_vec##N##ID##_norm(glmm_vec##N##ID##_t this)                                                                    \
-    {                                                                                                                                      \
-        int i;                                                                                                                             \
-        TYPE len = glmm_vec##N##ID##_len(this);                                                                                            \
-        for (i = 0; i < N; ++i)                                                                                                            \
-            this[i] = this[i] / len;                                                                                                       \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline TYPE glmm_vec##N##ID##_dot(const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right)                              \
-    {                                                                                                                                      \
-        TYPE result = 0;                                                                                                                   \
-        int i = 0;                                                                                                                         \
-        for (i = 0; i < N; ++i)                                                                                                            \
-        {                                                                                                                                  \
-            result += left[i] * right[i];                                                                                                  \
-        }                                                                                                                                  \
-        return result;                                                                                                                     \
-    }                                                                                                                                      \
-                                                                                                                                           \
-    static inline void glmm_vec##N##ID##_print(const glmm_vec##N##ID##_t this)                                                             \
-    {                                                                                                                                      \
-        printf("[ ");                                                                                                                      \
-        int i;                                                                                                                             \
-        for (i = 0; i < N; ++i)                                                                                                            \
-        {                                                                                                                                  \
-            printf(FMT, this[i]);                                                                                                          \
-            if (i != N - 1)                                                                                                                \
-                printf(", ");                                                                                                              \
-        }                                                                                                                                  \
-        printf(" ]");                                                                                                                      \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            result[i] = left[i] * right[i];                                                                                               \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline void glmm_vec##N##ID##_mul_scalar(glmm_vec##N##ID##_t result, const glmm_vec##N##ID##_t left, TYPE right)               \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            result[i] = left[i] * right;                                                                                                  \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline void glmm_vec##N##ID##_copy(glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                                  \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            this[i] = other[i];                                                                                                           \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline TYPE glmm_vec##N##ID##_len(glmm_vec##N##ID##_t this)                                                                    \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        TYPE sum = 0;                                                                                                                     \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            sum += this[i] * this[i];                                                                                                     \
+                                                                                                                                          \
+        return sqrt(sum);                                                                                                                 \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline void glmm_vec##N##ID##_norm(glmm_vec##N##ID##_t this)                                                                   \
+    {                                                                                                                                     \
+        int i;                                                                                                                            \
+        TYPE len = glmm_vec##N##ID##_len(this);                                                                                           \
+        for (i = 0; i < N; ++i)                                                                                                           \
+            this[i] = this[i] / len;                                                                                                      \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline TYPE glmm_vec##N##ID##_dot(const glmm_vec##N##ID##_t left, const glmm_vec##N##ID##_t right)                             \
+    {                                                                                                                                     \
+        TYPE result = 0;                                                                                                                  \
+        int i = 0;                                                                                                                        \
+        for (i = 0; i < N; ++i)                                                                                                           \
+        {                                                                                                                                 \
+            result += left[i] * right[i];                                                                                                 \
+        }                                                                                                                                 \
+        return result;                                                                                                                    \
+    }                                                                                                                                     \
+                                                                                                                                          \
+    static inline void glmm_vec##N##ID##_print(const glmm_vec##N##ID##_t this)                                                            \
+    {                                                                                                                                     \
+        printf("[ ");                                                                                                                     \
+        int i;                                                                                                                            \
+        for (i = 0; i < N; ++i)                                                                                                           \
+        {                                                                                                                                 \
+            printf(FMT, this[i]);                                                                                                         \
+            if (i != N - 1)                                                                                                               \
+                printf(", ");                                                                                                             \
+        }                                                                                                                                 \
+        printf(" ]");                                                                                                                     \
     }
 
 GLMM_VEC(2, f, float, "%f");

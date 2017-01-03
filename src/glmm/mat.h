@@ -80,45 +80,46 @@ static inline void glmm_mat4x4_translate(glmm_mat4x4_t this, const glmm_vec3f_t 
     glmm_vec4f_copy(this[3], tmp);
 }
 
-static inline void glmm_mat4x4_rotate(glmm_mat4x4_t this, float angle, const glmm_vec3f_t axis)
+static inline void glmm_mat4x4_rotate(glmm_mat4x4_t this, float angle, const glmm_vec3f_t in_axis)
 {
     int i;
     float c, s;
     c = cosf(angle);
     s = sinf(angle);
 
-    glmm_vec3f_t naxis;
-    glmm_vec3f_copy(naxis, axis);
-    glmm_vec3f_norm(naxis);
+    glmm_vec3f_t axis;
+    glmm_vec3f_copy(axis, in_axis);
+    glmm_vec3f_norm(axis);
 
-    glmm_vec3f_t tmp;
-    glmm_vec3f_mul_scalar(tmp, tmp, (1.0f - c));
+    glmm_vec3f_t invaxis;
+    glmm_vec3f_mul_scalar(invaxis, axis, (1.0f - c));
 
     glmm_mat4x4_t rotate;
     glmm_mat4x4_init(rotate, 0.0f);
 
-    rotate[0][0] = c + tmp[0] * axis[0];
-    rotate[0][1] = tmp[0] * axis[1] + s * axis[2];
-    rotate[0][2] = tmp[0] * axis[2] - s * axis[1];
+    rotate[0][0] = c + invaxis[0] * axis[0];
+    rotate[0][1] = invaxis[0] * axis[1] + s * axis[2];
+    rotate[0][2] = invaxis[0] * axis[2] - s * axis[1];
 
-    rotate[1][0] = tmp[1] * axis[0] - s * axis[2];
-    rotate[1][1] = c + tmp[1] * axis[1];
-    rotate[1][2] = tmp[1] * axis[2] + s * axis[0];
+    rotate[1][0] = invaxis[1] * axis[0] - s * axis[2];
+    rotate[1][1] = c + invaxis[1] * axis[1];
+    rotate[1][2] = invaxis[1] * axis[2] + s * axis[0];
 
-    rotate[2][0] = tmp[2] * axis[0] + s * axis[1];
-    rotate[2][1] = tmp[2] * axis[1] - s * axis[0];
-    rotate[2][2] = c + tmp[2] * axis[2];
+    rotate[2][0] = invaxis[2] * axis[0] + s * axis[1];
+    rotate[2][1] = invaxis[2] * axis[1] - s * axis[0];
+    rotate[2][2] = c + invaxis[2] * axis[2];
 
+    glmm_vec4f_t tmpa, tmpb, tmpc;
     glmm_mat4x4_t result;
     glmm_mat4x4_init(result, 0.0f);
 
-    for (i = 0; i < 3; ++i) 
+    for (i = 0; i < 3; ++i)
     {
-        glmm_vec4f_mul_scalar(result[i], this[0], rotate[i][0]);
-        glmm_vec4f_mul_scalar(tmp, this[1], rotate[i][1]);
-        glmm_vec4f_add(result[i], result[i], tmp);
-        glmm_vec4f_mul_scalar(tmp, this[2], rotate[i][2]);
-        glmm_vec4f_add(result[i], result[i], tmp);
+        glmm_vec4f_mul_scalar(tmpa, this[0], rotate[i][0]);
+        glmm_vec4f_mul_scalar(tmpb, this[1], rotate[i][1]);
+        glmm_vec4f_mul_scalar(tmpc, this[2], rotate[i][2]);
+        glmm_vec4f_add(result[i], tmpa, tmpb);
+        glmm_vec4f_add(result[i], result[i], tmpc);
     }
     glmm_vec4f_copy(result[3], this[3]);
 
