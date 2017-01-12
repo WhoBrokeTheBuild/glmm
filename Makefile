@@ -23,51 +23,31 @@ LDLIBS  +=
 # Dynamically get the sources/objects/tests
 
 SOURCES = $(wildcard $(SRC_DIR)/**/*.c $(SRC_DIR)/*.c)
+OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
 HEADERS = $(wildcard $(SRC_DIR)/**/*.h $(SRC_DIR)/*.h)
 TESTS   = $(patsubst %.c,%,$(wildcard $(TESTS_DIR)/*_test.c))
-TARGET  = $(BUILD_DIR)/lib$(NAME)
-
-AR_OBJ_DIR = $(OBJ_DIR)/static
-AR_DEP_DIR = $(DEP_DIR)/static
-AR_OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(AR_OBJ_DIR)/%.o,$(SOURCES))
-AR_TARGET  = $(TARGET).a
-
-SO_OBJ_DIR = $(OBJ_DIR)/dynamic
-SO_DEP_DIR = $(DEP_DIR)/dynamic
-SO_OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(SO_OBJ_DIR)/%.o,$(SOURCES))
-SO_TARGET  = $(TARGET).so
+TARGET  = $(BUILD_DIR)/lib$(NAME).a
 
 INC_HEADERS = $(patsubst $(SRC_DIR)/%.h,$(INC_DIR)/%.h,$(HEADERS))
 
 # Create directories to prevent "cannot create file" errors
 
 $(shell mkdir -p $(BUILD_DIR) $(SRC_DIR) $(INC_DIR))
-$(shell mkdir -p $(patsubst $(SRC_DIR)%,$(AR_DEP_DIR)%,$(dir $(SOURCES))))
-$(shell mkdir -p $(patsubst $(SRC_DIR)%,$(SO_DEP_DIR)%,$(dir $(SOURCES))))
-$(shell mkdir -p $(dir $(AR_OBJECTS) $(SO_OBJECTS)))
+$(shell mkdir -p $(patsubst $(SRC_DIR)%,$(DEP_DIR)%,$(dir $(SOURCES))))
+$(shell mkdir -p $(dir $(OBJECTS)))
 
-# Build the main targets
+# Build the main target
 
-all: $(AR_TARGET) $(SO_TARGET) includes
+all: $(TARGET) includes
 
-$(AR_OBJ_DIR)/%.o : $(SRC_DIR)/%.c
-$(AR_OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(AR_DEP_DIR)/%.d
-	$(CC) $(CFLAGS) -MM -MP -MT $@ -o $(AR_DEP_DIR)/$*.d $<
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(DEP_DIR)/%.d
+	$(CC) $(CFLAGS) -MM -MP -MT $@ -o $(DEP_DIR)/$*.d $<
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(SO_OBJ_DIR)/%.o : $(SRC_DIR)/%.c
-$(SO_OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(SO_DEP_DIR)/%.d
-	$(CC) $(CFLAGS) -MM -MP -MT $@ -o $(SO_DEP_DIR)/$*.d $<
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-$(AR_TARGET): $(AR_OBJECTS)
+$(TARGET): $(OBJECTS)
 	$(AR) rcs $@ $^
 	ranlib $@
-
-$(SO_TARGET): CFLAGS  += -fPIC
-$(SO_TARGET): LDFLAGS += -shared
-$(SO_TARGET): $(SO_OBJECTS)
-	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 includes: $(INC_HEADERS)
 
@@ -84,10 +64,10 @@ clean_deps:
 	rm -rf $(DEP_DIR)
 
 clean_objects:
-	rm -f $(AR_OBJECTS) $(SO_TARGETS)
+	rm -f $(OBJECTS)
 
 clean_targets:
-	rm -f $(AR_TARGET) $(SO_TARGET)
+	rm -f $(TARGET)
 
 # Install to system
 
@@ -102,14 +82,14 @@ format:
 
 # Builds test executables
 
-$(TESTS): $(AR_OBJECTS)
+$(TESTS): $(OBJECTS)
 	$(CC) $(CFLAGS) -c -o $@.o $@.c
 	$(CC) $(LDFLAGS) -o $@ $@.o $^ $(LDLIBS)
 	@rm $@.o
 
 test: CFLAGS  += $(shell pkg-config check --cflags) -DTEST_BUILD
 test: LDFLAGS += $(shell pkg-config check --libs-only-L)
-test: LDLIBS  += $(shell pkg-config check --libs-only-l) -l$(NAME)
+test: LDLIBS  += $(shell pkg-config check --libs-only-l)
 test: clean_objects $(TESTS)
 	export LD_LIBRARY_PATH=$(BUILD_DIR); $(addsuffix ;,$(TESTS))
 	@rm $(TESTS)
