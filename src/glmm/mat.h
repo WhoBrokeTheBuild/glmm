@@ -66,18 +66,16 @@ static inline void glmm_mat4x4_mul(glmm_mat4x4_t result, const glmm_mat4x4_t lef
 
 static inline void glmm_mat4x4_translate(glmm_mat4x4_t this, const glmm_vec3f_t vec)
 {
-    int i;
-    glmm_vec4f_t tmp;
-    glmm_vec4f_init(tmp, 0.0f);
-    for (i = 0; i < 3; ++i)
-    {
-        tmp[0] += this[i][0] * vec[i];
-        tmp[1] += this[i][1] * vec[i];
-        tmp[2] += this[i][2] * vec[i];
-        tmp[3] += this[i][3];
-    }
+    glmm_vec4f_t tmpa, tmpb, tmpc;
+    glmm_vec4f_init(tmpa, 0.0f);
+    glmm_vec4f_init(tmpb, 0.0f);
+    glmm_vec4f_init(tmpc, 0.0f);
 
-    glmm_vec4f_copy(this[3], tmp);
+    glmm_vec4f_mul_scalar(tmpa, this[0], vec[0]);
+    glmm_vec4f_mul_scalar(tmpb, this[1], vec[1]);
+    glmm_vec4f_mul_scalar(tmpc, this[2], vec[2]);
+    glmm_vec4f_add(this[3], tmpa, tmpb);
+    glmm_vec4f_add(this[3], this[3], tmpc);
 }
 
 static inline void glmm_mat4x4_rotate(glmm_mat4x4_t this, float angle, const glmm_vec3f_t in_axis)
@@ -124,6 +122,15 @@ static inline void glmm_mat4x4_rotate(glmm_mat4x4_t this, float angle, const glm
     glmm_vec4f_copy(result[3], this[3]);
 
     glmm_mat4x4_copy(this, result);
+}
+
+static inline void glmm_mat4x4_scale(glmm_mat4x4_t this, const glmm_vec3f_t scale)
+{
+    int i;
+    for (i = 0; i < 3; ++i) 
+    {
+        glmm_vec4f_mul_scalar(this[i], this[i], scale[i]);
+    }
 }
 
 static inline void glmm_look_at_rh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
@@ -247,6 +254,7 @@ static inline void glmm_perspective_lh(glmm_mat4x4_t result, float aspect, float
 #define mat4x4_mul glmm_mat4x4_mul
 #define mat4x4_translate glmm_mat4x4_translate
 #define mat4x4_rotate glmm_mat4x4_rotate
+#define mat4x4_scale glmm_mat4x4_scale
 
 #endif // GLMM_NO_SHORT_DEFINES
 
