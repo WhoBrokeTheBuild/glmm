@@ -93,7 +93,7 @@ clean_targets:
 
 install: all
 	install -d $(BUILD_DIR)/include/ $(PREFIX)/include/
-	install -d $(BUILD_DIR)/lib64/ $(PREFIX)/lib64/
+	cp -rf $(BUILD_DIR)/include/* $(PREFIX)/include/
 
 # Format code
 
