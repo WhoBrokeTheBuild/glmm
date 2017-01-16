@@ -73,7 +73,7 @@ clean_targets:
 
 install: all
 	install -d $(BUILD_DIR)/include/ $(PREFIX)/include/
-	cp -rf $(BUILD_DIR)/include/* $(PREFIX)/include/
+	cp -rfv $(BUILD_DIR)/include/* $(PREFIX)/include/
 
 # Format code
 
