@@ -148,7 +148,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec2f_mul glmm_vec2f_mul
 #define vec2f_mul_scalar glmm_vec2f_mul_scalar
 #define vec2f_copy glmm_vec2f_copy
-#define vec2f_set glmm_vec2f_set
+#define vec2f_len glmm_vec2f_len
+#define vec2f_norm glmm_vec2f_norm
 #define vec2f_dot glmm_vec2f_dot
 #define vec2f_print glmm_vec2f_print
 
@@ -160,7 +161,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec2i_mul glmm_vec2i_mul
 #define vec2i_mul_scalar glmm_vec2i_mul_scalar
 #define vec2i_copy glmm_vec2i_copy
-#define vec2i_set glmm_vec2i_set
+#define vec2i_len glmm_vec2i_len
+#define vec2i_norm glmm_vec2i_norm
 #define vec2i_dot glmm_vec2i_dot
 #define vec2i_print glmm_vec2i_print
 
@@ -172,7 +174,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec2u_mul glmm_vec2u_mul
 #define vec2u_mul_scalar glmm_vec2u_mul_scalar
 #define vec2u_copy glmm_vec2u_copy
-#define vec2u_set glmm_vec2u_set
+#define vec2u_len glmm_vec2u_len
+#define vec2u_norm glmm_vec2u_norm
 #define vec2u_dot glmm_vec2u_dot
 #define vec2u_print glmm_vec2u_print
 
@@ -184,7 +187,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec3f_mul glmm_vec3f_mul
 #define vec3f_mul_scalar glmm_vec3f_mul_scalar
 #define vec3f_copy glmm_vec3f_copy
-#define vec3f_set glmm_vec3f_set
+#define vec3f_len glmm_vec3f_len
+#define vec3f_norm glmm_vec3f_norm
 #define vec3f_dot glmm_vec3f_dot
 #define vec3f_print glmm_vec3f_print
 #define vec3f_cross glmm_vec3f_cross
@@ -197,7 +201,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec3i_mul glmm_vec3i_mul
 #define vec3i_mul_scalar glmm_vec3i_mul_scalar
 #define vec3i_copy glmm_vec3i_copy
-#define vec3i_set glmm_vec3i_set
+#define vec3i_len glmm_vec3i_len
+#define vec3i_norm glmm_vec3i_norm
 #define vec3i_dot glmm_vec3i_dot
 #define vec3i_print glmm_vec3i_print
 #define vec3i_cross glmm_vec3i_cross
@@ -210,7 +215,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec3u_mul glmm_vec3u_mul
 #define vec3u_mul_scalar glmm_vec3u_mul_scalar
 #define vec3u_copy glmm_vec3u_copy
-#define vec3u_set glmm_vec3u_set
+#define vec3u_len glmm_vec3u_len
+#define vec3u_norm glmm_vec3u_norm
 #define vec3u_dot glmm_vec3u_dot
 #define vec3u_print glmm_vec3u_print
 #define vec3u_cross glmm_vec3u_cross
@@ -223,7 +229,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec4f_mul glmm_vec4f_mul
 #define vec4f_mul_scalar glmm_vec4f_mul_scalar
 #define vec4f_copy glmm_vec4f_copy
-#define vec4f_set glmm_vec4f_set
+#define vec4f_len glmm_vec4f_len
+#define vec4f_norm glmm_vec4f_norm
 #define vec4f_dot glmm_vec4f_dot
 #define vec4f_print glmm_vec4f_print
 #define vec4f_cross glmm_vec4f_cross
@@ -236,7 +243,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec4i_mul glmm_vec4i_mul
 #define vec4i_mul_scalar glmm_vec4i_mul_scalar
 #define vec4i_copy glmm_vec4i_copy
-#define vec4i_set glmm_vec4i_set
+#define vec4i_len glmm_vec4i_len
+#define vec4i_norm glmm_vec4i_norm
 #define vec4i_dot glmm_vec4i_dot
 #define vec4i_print glmm_vec4i_print
 #define vec4i_cross glmm_vec4i_cross
@@ -249,7 +257,8 @@ GLMM_VEC4_SPECIAL(u);
 #define vec4u_mul glmm_vec4u_mul
 #define vec4u_mul_scalar glmm_vec4u_mul_scalar
 #define vec4u_copy glmm_vec4u_copy
-#define vec4u_set glmm_vec4u_set
+#define vec4u_len glmm_vec4u_len
+#define vec4u_norm glmm_vec4u_norm
 #define vec4u_dot glmm_vec4u_dot
 #define vec4u_print glmm_vec4u_print
 #define vec4u_cross glmm_vec4u_cross
