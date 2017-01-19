@@ -16,11 +16,6 @@ static inline void glmm_quat_init(glmm_quat_t this, float value)
     this[3] = 1.0f;
 }
 
-static inline void glmm_quat_cross(glmm_quat_t this, const glmm_quat_t other)
-{
-    glmm_quat_xcross(this, this, other);
-}
-
 static inline void glmm_quat_xcross(glmm_quat_t result, glmm_quat_t this, const glmm_quat_t other)
 {
     glmm_quat_t tmp;
@@ -29,6 +24,11 @@ static inline void glmm_quat_xcross(glmm_quat_t result, glmm_quat_t this, const 
     tmp[1] = this[3] * other[1] + this[1] * other[3] + this[2] * other[0] - this[0] * other[2];
     tmp[2] = this[3] * other[2] + this[2] * other[3] + this[0] * other[1] - this[1] * other[0];
     glmm_quat_copy(result, tmp);
+}
+
+static inline void glmm_quat_cross(glmm_quat_t this, const glmm_quat_t other)
+{
+    glmm_quat_xcross(this, this, other);
 }
 
 static inline void glmm_quat_print(const glmm_quat_t this)

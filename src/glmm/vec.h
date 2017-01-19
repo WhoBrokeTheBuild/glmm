@@ -217,11 +217,6 @@ GLMM_VEC(4, u, unsigned int, "%u");
 
 #define GLMM_VEC3_SPECIAL(ID)                                                                                                        \
                                                                                                                                      \
-    static inline void glmm_vec3##ID##_cross(glmm_vec3##ID##_t this, const glmm_vec3##ID##_t other)                                  \
-    {                                                                                                                                \
-        glmm_vec3##ID##_xcross(this, this, other);                                                                                   \
-    }                                                                                                                                \
-                                                                                                                                     \
     static inline void glmm_vec3##ID##_xcross(glmm_vec3##ID##_t result, const glmm_vec3##ID##_t this, const glmm_vec3##ID##_t other) \
     {                                                                                                                                \
         glmm_vec3##ID##_t tmp;                                                                                                       \
@@ -229,6 +224,11 @@ GLMM_VEC(4, u, unsigned int, "%u");
         tmp[1] = this[2] * other[0] - this[0] * other[2];                                                                            \
         tmp[2] = this[0] * other[1] - this[1] * other[0];                                                                            \
         glmm_vec3##ID##_copy(result, tmp);                                                                                           \
+    }                                                                                                                                \
+                                                                                                                                     \
+    static inline void glmm_vec3##ID##_cross(glmm_vec3##ID##_t this, const glmm_vec3##ID##_t other)                                  \
+    {                                                                                                                                \
+        glmm_vec3##ID##_xcross(this, this, other);                                                                                   \
     }
 
 // GLMM_VEC3_SPECIAL
@@ -239,15 +239,15 @@ GLMM_VEC3_SPECIAL(u);
 
 #define GLMM_VEC4_SPECIAL(ID)                                                                                                        \
                                                                                                                                      \
-    static inline void glmm_vec4##ID##_cross(glmm_vec4##ID##_t this, const glmm_vec4##ID##_t other)                                  \
-    {                                                                                                                                \
-        glmm_vec4##ID##_xcross(this, this, other);                                                                                   \
-    }                                                                                                                                \
-                                                                                                                                     \
     static inline void glmm_vec4##ID##_xcross(glmm_vec4##ID##_t result, const glmm_vec4##ID##_t this, const glmm_vec4##ID##_t other) \
     {                                                                                                                                \
         glmm_vec3##ID##_xcross(result, this, other);                                                                                 \
         result[3] = 1;                                                                                                               \
+    }                                                                                                                                \
+                                                                                                                                     \
+    static inline void glmm_vec4##ID##_cross(glmm_vec4##ID##_t this, const glmm_vec4##ID##_t other)                                  \
+    {                                                                                                                                \
+        glmm_vec4##ID##_xcross(this, this, other);                                                                                   \
     }
 
 // GLMM_VEC4_SPECIAL
