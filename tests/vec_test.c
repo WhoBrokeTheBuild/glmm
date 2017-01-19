@@ -37,8 +37,8 @@ START_TEST(test_vec_eq)
                     ck_assert(glmm_vec2i_eq(a, b));
                 }
                 {
-                    glmm_vec2i_t a = { i, j };
-                    glmm_vec2i_t b = { j, i };
+                    glmm_vec2i_t a = { 5, j };
+                    glmm_vec2i_t b = { j, 5 };
                     ck_assert(!glmm_vec2i_eq(a, b));
                 }
             }
@@ -61,8 +61,8 @@ START_TEST(test_vec_ne)
                     ck_assert(glmm_vec2i_ne(a, b));
                 }
                 {
-                    glmm_vec2i_t a = { i, j };
-                    glmm_vec2i_t b = { i, j };
+                    glmm_vec2i_t a = { 5, j };
+                    glmm_vec2i_t b = { i, 5 };
                     ck_assert(!glmm_vec2i_ne(a, b));
                 }
             }
@@ -153,7 +153,7 @@ START_TEST(test_vec_xsub)
         glmm_vec2i_t b = { 1, 2 };
         glmm_vec2i_xsub(r, a, b);
         ck_assert(r[0] == 3 - 1);
-        ck_assert(r[1] == 3 - 2);
+        ck_assert(r[1] == 4 - 2);
     }
 }
 END_TEST

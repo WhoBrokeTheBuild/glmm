@@ -24,7 +24,7 @@ static inline void glmm_quat_init(glmm_quat_t this)
     this[3] = 1.0f;
 }
 
-static inline void glmm_quat_angle_axis(glmm_quat_t result, float angle, vec3f_t vec)
+static inline void glmm_quat_angle_axis(glmm_quat_t result, float angle, glmm_vec3f_t vec)
 {
     float s = sinf(angle * 0.5f);
 
