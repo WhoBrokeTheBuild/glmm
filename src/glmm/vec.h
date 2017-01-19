@@ -39,7 +39,7 @@
         return !glmm_vec##N##ID##_eq(this, other);                                                                                          \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_add(const glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                               \
+    static inline void glmm_vec##N##ID##_add(glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                                     \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         for (i = 0; i < N; ++i)                                                                                                             \
@@ -53,7 +53,7 @@
             result[i] = this[i] + other[i];                                                                                                 \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_adds(const glmm_vec##N##ID##_t this, TYPE value)                                                   \
+    static inline void glmm_vec##N##ID##_adds(glmm_vec##N##ID##_t this, TYPE value)                                                         \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         for (i = 0; i < N; ++i)                                                                                                             \
@@ -67,7 +67,7 @@
             result[i] = this[i] + value;                                                                                                    \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_sub(const glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                               \
+    static inline void glmm_vec##N##ID##_sub(glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                                     \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         for (i = 0; i < N; ++i)                                                                                                             \
@@ -81,7 +81,7 @@
             result[i] = this[i] - other[i];                                                                                                 \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_subs(const glmm_vec##N##ID##_t this, TYPE value)                                                   \
+    static inline void glmm_vec##N##ID##_subs(glmm_vec##N##ID##_t this, TYPE value)                                                         \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         for (i = 0; i < N; ++i)                                                                                                             \
@@ -95,7 +95,7 @@
             result[i] = this[i] - value;                                                                                                    \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_mul(const glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                               \
+    static inline void glmm_vec##N##ID##_mul(glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                                     \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         for (i = 0; i < N; ++i)                                                                                                             \
@@ -109,7 +109,7 @@
             result[i] = this[i] * other[i];                                                                                                 \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_muls(const glmm_vec##N##ID##_t this, TYPE value)                                                   \
+    static inline void glmm_vec##N##ID##_muls(glmm_vec##N##ID##_t this, TYPE value)                                                         \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         for (i = 0; i < N; ++i)                                                                                                             \
@@ -123,7 +123,7 @@
             result[i] = this[i] * value;                                                                                                    \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_div(const glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                               \
+    static inline void glmm_vec##N##ID##_div(glmm_vec##N##ID##_t this, const glmm_vec##N##ID##_t other)                                     \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         for (i = 0; i < N; ++i)                                                                                                             \
@@ -137,7 +137,7 @@
             result[i] = this[i] / other[i];                                                                                                 \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_divs(const glmm_vec##N##ID##_t this, TYPE value)                                                   \
+    static inline void glmm_vec##N##ID##_divs(glmm_vec##N##ID##_t this, TYPE value)                                                         \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         for (i = 0; i < N; ++i)                                                                                                             \
@@ -151,7 +151,7 @@
             result[i] = this[i] / value;                                                                                                    \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline TYPE glmm_vec##N##ID##_len(glmm_vec##N##ID##_t this)                                                                      \
+    static inline TYPE glmm_vec##N##ID##_len(const glmm_vec##N##ID##_t this)                                                                \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         TYPE sum = 0;                                                                                                                       \
@@ -169,7 +169,7 @@
             this[i] /= len;                                                                                                                 \
     }                                                                                                                                       \
                                                                                                                                             \
-    static inline void glmm_vec##N##ID##_xnorm(glmm_vec##N##ID##_t result, glmm_vec##N##ID##_t this)                                        \
+    static inline void glmm_vec##N##ID##_xnorm(glmm_vec##N##ID##_t result, const glmm_vec##N##ID##_t this)                                  \
     {                                                                                                                                       \
         int i;                                                                                                                              \
         TYPE len = glmm_vec##N##ID##_len(this);                                                                                             \
