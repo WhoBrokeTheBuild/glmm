@@ -38,13 +38,13 @@ static inline void glmm_vec3f_rotate_by_quat(glmm_vec3f_t result, glmm_vec3f_t v
 {
     glmm_vec3f_t quat_v = { q[0], q[1], q[2] };
     glmm_vec3f_t tmp, uv, uuv;
-    glmm_vec3f_cross(uv, quat_v, v);
-    glmm_vec3f_cross(uuv, quat_v, uv);
+    glmm_vec3f_xcross(uv, quat_v, v);
+    glmm_vec3f_xcross(uuv, quat_v, uv);
 
-    glmm_vec3f_mul_scalar(tmp, uv, q[3]);
-    glmm_vec3f_add(tmp, tmp, uuv);
-    glmm_vec3f_mul_scalar(tmp, tmp, 2.0f);
-    glmm_vec3f_add(result, tmp, v);
+    glmm_vec3f_xmuls(tmp, uv, q[3]);
+    glmm_vec3f_add(tmp, uuv);
+    glmm_vec3f_muls(tmp, 2.0f);
+    glmm_vec3f_xadd(result, tmp, v);
 }
 
 static inline void glmm_quat_print(const glmm_quat_t this)

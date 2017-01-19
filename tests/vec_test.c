@@ -2,93 +2,212 @@
 #include <glmm/glmm.h>
 #include <stdlib.h>
 
-START_TEST(test_vec2_init)
+START_TEST(test_vec_init)
 {
-    glmm_vec2i_t a;
-    glmm_vec2i_init(a, 0);
-
-    ck_assert(a[0] == 0);
-    ck_assert(a[1] == 0);
+    {
+        glmm_vec2i_t a;
+        glmm_vec2i_init(a, 0);
+        ck_assert(a[0] == 0);
+        ck_assert(a[1] == 0);
+    }
 }
 END_TEST
 
-START_TEST(test_vec2_eq)
+START_TEST(test_vec_initializer_list)
 {
-    glmm_vec2i_t a, b;
-    glmm_vec2i_init(a, 0);
-    glmm_vec2i_init(b, 0);
-
-    a[0] = b[0] = 1;
-    a[1] = b[1] = 2;
-
-    ck_assert(glmm_vec2i_eq(a, b));
-
-    a[0] = 3;
-
-    ck_assert(!glmm_vec2i_eq(a, b));
-
-    a[0] = 1;
-    a[1] = 3;
-
-    ck_assert(!glmm_vec2i_eq(a, b));
+    {
+        glmm_vec2i_t a = { 1, 2 };
+        ck_assert(a[0] == 1);
+        ck_assert(a[1] == 2);
+    }
 }
 END_TEST
 
-START_TEST(test_vec2_add)
+START_TEST(test_vec_eq)
 {
-    glmm_vec2i_t a, b;
-    glmm_vec2i_init(a, 0);
-    glmm_vec2i_init(b, 0);
-
-    b[0] = 1;
-    b[1] = 2;
-
-    glmm_vec2i_add(a, a, b);
-
-    ck_assert(a[0] == 1);
-    ck_assert(a[1] == 2);
-
-    glmm_vec2i_add(b, b, a);
-
-    ck_assert(b[0] == 2);
-    ck_assert(b[1] == 4);
+    {
+        int i, j;
+        for (i = 0; i < 2; ++i)
+        {
+            for (j = 0; j < 2; ++j)
+            {
+                {
+                    glmm_vec2i_t a = { i, j };
+                    glmm_vec2i_t b = { i, j };
+                    ck_assert(glmm_vec2i_eq(a, b));
+                }
+                {
+                    glmm_vec2i_t a = { i, j };
+                    glmm_vec2i_t b = { j, i };
+                    ck_assert(!glmm_vec2i_eq(a, b));
+                }
+            }
+        }
+    }
 }
 END_TEST
 
-START_TEST(test_vec2_sub)
+START_TEST(test_vec_ne)
 {
-    glmm_vec2i_t a, b;
-    glmm_vec2i_init(a, 0);
-    glmm_vec2i_init(b, 0);
+    {
+        int i, j;
+        for (i = 0; i < 2; ++i)
+        {
+            for (j = 0; j < 2; ++j)
+            {
+                {
+                    glmm_vec2i_t a = { i, j };
+                    glmm_vec2i_t b = { j, i };
+                    ck_assert(glmm_vec2i_ne(a, b));
+                }
+                {
+                    glmm_vec2i_t a = { i, j };
+                    glmm_vec2i_t b = { i, j };
+                    ck_assert(!glmm_vec2i_ne(a, b));
+                }
+            }
+        }
+    }
+}
+END_TEST
 
-    b[0] = 1;
-    b[1] = 2;
+START_TEST(test_vec_add)
+{
+    {
+        glmm_vec2i_t a = { 1, 2 };
+        glmm_vec2i_t b = { 2, 3 };
+        glmm_vec2i_add(a, b);
+        ck_assert(a[0] == 1 + 2);
+        ck_assert(a[1] == 2 + 3);
+    }
+}
+END_TEST
 
-    glmm_vec2i_sub(a, a, b);
+START_TEST(test_vec_adds)
+{
+    {
+        glmm_vec2i_t a = { 1, 2 };
+        int b = 2;
+        glmm_vec2i_adds(a, b);
+        ck_assert(a[0] == 1 + 2);
+        ck_assert(a[1] == 2 + 2);
+    }
+}
+END_TEST
 
-    ck_assert(a[0] == -1);
-    ck_assert(a[1] == -2);
+START_TEST(test_vec_xadd)
+{
+    {
+        glmm_vec2i_t r;
+        glmm_vec2i_t a = { 1, 2 };
+        glmm_vec2i_t b = { 2, 3 };
+        glmm_vec2i_xadd(r, a, b);
+        ck_assert(r[0] == 1 + 2);
+        ck_assert(r[1] == 2 + 3);
+    }
+}
+END_TEST
 
-    glmm_vec2i_sub(b, b, a);
+START_TEST(test_vec_xadds)
+{
+    {
+        glmm_vec2i_t r;
+        glmm_vec2i_t a = { 1, 2 };
+        int b = 2;
+        glmm_vec2i_xadds(r, a, b);
+        ck_assert(r[0] == 1 + 2);
+        ck_assert(r[1] == 2 + 2);
+    }
+}
+END_TEST
 
-    ck_assert(b[0] == 2);
-    ck_assert(b[1] == 4);
+START_TEST(test_vec_sub)
+{
+    {
+        glmm_vec2i_t a = { 3, 4 };
+        glmm_vec2i_t b = { 1, 2 };
+        glmm_vec2i_sub(a, b);
+        ck_assert(a[0] == 3 - 1);
+        ck_assert(a[1] == 4 - 2);
+    }
+}
+END_TEST
+
+START_TEST(test_vec_subs)
+{
+    {
+        glmm_vec2i_t a = { 3, 4 };
+        int b = 2;
+        glmm_vec2i_subs(a, b);
+        ck_assert(a[0] == 3 - 2);
+        ck_assert(a[1] == 4 - 2);
+    }
+}
+END_TEST
+
+START_TEST(test_vec_xsub)
+{
+    {
+        glmm_vec2i_t r;
+        glmm_vec2i_t a = { 3, 4 };
+        glmm_vec2i_t b = { 1, 2 };
+        glmm_vec2i_xsub(r, a, b);
+        ck_assert(r[0] == 3 - 1);
+        ck_assert(r[1] == 3 - 2);
+    }
+}
+END_TEST
+
+START_TEST(test_vec_xsubs)
+{
+    {
+        glmm_vec2i_t r;
+        glmm_vec2i_t a = { 3, 4 };
+        int b = 2;
+        glmm_vec2i_xsubs(r, a, b);
+        ck_assert(r[0] == 3 - 2);
+        ck_assert(r[1] == 4 - 2);
+    }
 }
 END_TEST
 
 Suite *vec_suite()
 {
     Suite *s;
-    TCase *tc_vec2, *tc_vec3, *tc_vec4;
+    TCase *tc_init,
+          *tc_comp,
+          *tc_ops;
 
     s = suite_create("vec");
 
-    tc_vec2 = tcase_create("vec2");
-    tcase_add_test(tc_vec2, test_vec2_init);
-    tcase_add_test(tc_vec2, test_vec2_eq);
-    tcase_add_test(tc_vec2, test_vec2_add);
-    tcase_add_test(tc_vec2, test_vec2_sub);
-    suite_add_tcase(s, tc_vec2);
+    tc_init = tcase_create("init");
+    tcase_add_test(tc_init, test_vec_init);
+    tcase_add_test(tc_init, test_vec_initializer_list);
+    suite_add_tcase(s, tc_init);
+
+    tc_comp = tcase_create("comp");
+    tcase_add_test(tc_comp, test_vec_eq);
+    tcase_add_test(tc_comp, test_vec_ne);
+    suite_add_tcase(s, tc_comp);
+
+    tc_ops = tcase_create("ops");
+    tcase_add_test(tc_ops, test_vec_add);
+    tcase_add_test(tc_ops, test_vec_adds);
+    tcase_add_test(tc_ops, test_vec_xadd);
+    tcase_add_test(tc_ops, test_vec_xadds);
+    tcase_add_test(tc_ops, test_vec_sub);
+    tcase_add_test(tc_ops, test_vec_subs);
+    tcase_add_test(tc_ops, test_vec_xsub);
+    tcase_add_test(tc_ops, test_vec_xsubs);
+    //tcase_add_test(tc_ops, test_vec_mul);
+    //tcase_add_test(tc_ops, test_vec_muls);
+    //tcase_add_test(tc_ops, test_vec_xmul);
+    //tcase_add_test(tc_ops, test_vec_xmuls);
+    //tcase_add_test(tc_ops, test_vec_div);
+    //tcase_add_test(tc_ops, test_vec_divs);
+    //tcase_add_test(tc_ops, test_vec_xdiv);
+    //tcase_add_test(tc_ops, test_vec_xdivs);
+    suite_add_tcase(s, tc_ops);
 
     return s;
 }

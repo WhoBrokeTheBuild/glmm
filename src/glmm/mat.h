@@ -52,13 +52,13 @@ static inline void glmm_mat4x4_mul(glmm_mat4x4_t result, const glmm_mat4x4_t lef
     glmm_mat4x4_init(mat, 0.0f);
     for (i = 0; i < 4; ++i)
     {
-        glmm_vec4f_mul_scalar(tmp1, left[0], right[i][0]);
-        glmm_vec4f_mul_scalar(tmp2, left[1], right[i][1]);
-        glmm_vec4f_mul_scalar(tmp3, left[2], right[i][2]);
-        glmm_vec4f_mul_scalar(tmp4, left[3], right[i][3]);
-        glmm_vec4f_add(tmp1, tmp1, tmp2);
-        glmm_vec4f_add(tmp1, tmp1, tmp3);
-        glmm_vec4f_add(tmp1, tmp1, tmp4);
+        glmm_vec4f_xmuls(tmp1, left[0], right[i][0]);
+        glmm_vec4f_xmuls(tmp2, left[1], right[i][1]);
+        glmm_vec4f_xmuls(tmp3, left[2], right[i][2]);
+        glmm_vec4f_xmuls(tmp4, left[3], right[i][3]);
+        glmm_vec4f_add(tmp1, tmp2);
+        glmm_vec4f_add(tmp1, tmp3);
+        glmm_vec4f_add(tmp1, tmp4);
         glmm_vec4f_copy(mat[i], tmp1);
     }
     glmm_mat4x4_copy(result, mat);
@@ -67,15 +67,11 @@ static inline void glmm_mat4x4_mul(glmm_mat4x4_t result, const glmm_mat4x4_t lef
 static inline void glmm_mat4x4_translate(glmm_mat4x4_t this, const glmm_vec3f_t vec)
 {
     glmm_vec4f_t tmpa, tmpb, tmpc;
-    glmm_vec4f_init(tmpa, 0.0f);
-    glmm_vec4f_init(tmpb, 0.0f);
-    glmm_vec4f_init(tmpc, 0.0f);
-
-    glmm_vec4f_mul_scalar(tmpa, this[0], vec[0]);
-    glmm_vec4f_mul_scalar(tmpb, this[1], vec[1]);
-    glmm_vec4f_mul_scalar(tmpc, this[2], vec[2]);
-    glmm_vec4f_add(this[3], tmpa, tmpb);
-    glmm_vec4f_add(this[3], this[3], tmpc);
+    glmm_vec4f_xmuls(tmpa, this[0], vec[0]);
+    glmm_vec4f_xmuls(tmpb, this[1], vec[1]);
+    glmm_vec4f_xmuls(tmpc, this[2], vec[2]);
+    glmm_vec4f_xadd(this[3], tmpa, tmpb);
+    glmm_vec4f_add(this[3], tmpc);
 }
 
 static inline void glmm_mat4x4_rotate(glmm_mat4x4_t this, float angle, const glmm_vec3f_t in_axis)
@@ -86,11 +82,10 @@ static inline void glmm_mat4x4_rotate(glmm_mat4x4_t this, float angle, const glm
     s = sinf(angle);
 
     glmm_vec3f_t axis;
-    glmm_vec3f_copy(axis, in_axis);
-    glmm_vec3f_norm(axis);
+    glmm_vec3f_xnorm(axis, in_axis);
 
     glmm_vec3f_t invaxis;
-    glmm_vec3f_mul_scalar(invaxis, axis, (1.0f - c));
+    glmm_vec3f_xmuls(invaxis, axis, (1.0f - c));
 
     glmm_mat4x4_t rotate;
     glmm_mat4x4_init(rotate, 0.0f);
@@ -113,11 +108,11 @@ static inline void glmm_mat4x4_rotate(glmm_mat4x4_t this, float angle, const glm
 
     for (i = 0; i < 3; ++i)
     {
-        glmm_vec4f_mul_scalar(tmpa, this[0], rotate[i][0]);
-        glmm_vec4f_mul_scalar(tmpb, this[1], rotate[i][1]);
-        glmm_vec4f_mul_scalar(tmpc, this[2], rotate[i][2]);
-        glmm_vec4f_add(result[i], tmpa, tmpb);
-        glmm_vec4f_add(result[i], result[i], tmpc);
+        glmm_vec4f_xmuls(tmpa, this[0], rotate[i][0]);
+        glmm_vec4f_xmuls(tmpb, this[1], rotate[i][1]);
+        glmm_vec4f_xmuls(tmpc, this[2], rotate[i][2]);
+        glmm_vec4f_xadd(result[i], tmpa, tmpb);
+        glmm_vec4f_add(result[i], tmpc);
     }
     glmm_vec4f_copy(result[3], this[3]);
 
@@ -127,9 +122,9 @@ static inline void glmm_mat4x4_rotate(glmm_mat4x4_t this, float angle, const glm
 static inline void glmm_mat4x4_scale(glmm_mat4x4_t this, const glmm_vec3f_t scale)
 {
     int i;
-    for (i = 0; i < 3; ++i) 
+    for (i = 0; i < 3; ++i)
     {
-        glmm_vec4f_mul_scalar(this[i], this[i], scale[i]);
+        glmm_vec4f_muls(this[i], scale[i]);
     }
 }
 
@@ -137,13 +132,13 @@ static inline void glmm_look_at_rh(glmm_mat4x4_t result, const glmm_vec3f_t eye,
 {
     glmm_vec3f_t f, s, u;
 
-    glmm_vec3f_sub(f, center, eye);
+    glmm_vec3f_xsub(f, center, eye);
     glmm_vec3f_norm(f);
 
-    glmm_vec3f_cross(s, f, up);
+    glmm_vec3f_xcross(s, f, up);
     glmm_vec3f_norm(s);
 
-    glmm_vec3f_cross(u, s, f);
+    glmm_vec3f_xcross(u, s, f);
 
     glmm_mat4x4_init(result, 1.0f);
     result[0][0] = s[0];
@@ -164,13 +159,13 @@ static inline void glmm_look_at_lh(glmm_mat4x4_t result, const glmm_vec3f_t eye,
 {
     glmm_vec3f_t f, s, u;
 
-    glmm_vec3f_sub(f, center, eye);
+    glmm_vec3f_xsub(f, center, eye);
     glmm_vec3f_norm(f);
 
-    glmm_vec3f_cross(s, up, f);
+    glmm_vec3f_xcross(s, up, f);
     glmm_vec3f_norm(s);
 
-    glmm_vec3f_cross(u, f, s);
+    glmm_vec3f_xcross(u, f, s);
 
     glmm_mat4x4_init(result, 1.0f);
     result[0][0] = s[0];
