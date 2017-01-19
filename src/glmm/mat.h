@@ -49,7 +49,7 @@ static inline void glmm_mat4x4_xmul(glmm_mat4x4_t result, const glmm_mat4x4_t th
     glmm_mat4x4_t mtmp;
     glmm_vec4f_t vtmp1, vtmp2, vtmp3, vtmp4;
 
-    glmm_mat4x4_init(mat, 0.0f);
+    glmm_mat4x4_init(mtmp, 0.0f);
     for (i = 0; i < 4; ++i)
     {
         glmm_vec4f_xmuls(vtmp1, this[0], other[i][0]);
@@ -63,7 +63,7 @@ static inline void glmm_mat4x4_xmul(glmm_mat4x4_t result, const glmm_mat4x4_t th
     glmm_mat4x4_copy(result, mtmp);
 }
 
-static inline void glmm_mat4x4_mul(const glmm_mat4x4_t this, const glmm_mat4x4_t other)
+static inline void glmm_mat4x4_mul(glmm_mat4x4_t this, const glmm_mat4x4_t other)
 {
     glmm_mat4x4_xmul(this, this, other);
 }
