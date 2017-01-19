@@ -43,25 +43,29 @@ GLMM_MAT(2, 2);
 GLMM_MAT(3, 3);
 GLMM_MAT(4, 4);
 
-static inline void glmm_mat4x4_mul(glmm_mat4x4_t result, const glmm_mat4x4_t left, const glmm_mat4x4_t right)
+static inline void glmm_mat4x4_mul(const glmm_mat4x4_t this, const glmm_mat4x4_t other)
+{
+    glmm_mat4x4_xmul(this, this, other);
+}
+
+static inline void glmm_mat4x4_xmul(glmm_mat4x4_t result, const glmm_mat4x4_t this, const glmm_mat4x4_t other)
 {
     int i;
-    glmm_mat4x4_t mat;
-    glmm_vec4f_t tmp1, tmp2, tmp3, tmp4;
+    glmm_mat4x4_t mtmp;
+    glmm_vec4f_t vtmp1, vtmp2, vtmp3, vtmp4;
 
     glmm_mat4x4_init(mat, 0.0f);
     for (i = 0; i < 4; ++i)
     {
-        glmm_vec4f_xmuls(tmp1, left[0], right[i][0]);
-        glmm_vec4f_xmuls(tmp2, left[1], right[i][1]);
-        glmm_vec4f_xmuls(tmp3, left[2], right[i][2]);
-        glmm_vec4f_xmuls(tmp4, left[3], right[i][3]);
-        glmm_vec4f_add(tmp1, tmp2);
-        glmm_vec4f_add(tmp1, tmp3);
-        glmm_vec4f_add(tmp1, tmp4);
-        glmm_vec4f_copy(mat[i], tmp1);
+        glmm_vec4f_xmuls(vtmp1, this[0], other[i][0]);
+        glmm_vec4f_xmuls(vtmp2, this[1], other[i][1]);
+        glmm_vec4f_xmuls(vtmp3, this[2], other[i][2]);
+        glmm_vec4f_xmuls(vtmp4, this[3], other[i][3]);
+        glmm_vec4f_xadd(mtmp[i], vtmp1, vtmp2);
+        glmm_vec4f_add(mtmp[i], vtmp3);
+        glmm_vec4f_add(mtmp[i], vtmp4);
     }
-    glmm_mat4x4_copy(result, mat);
+    glmm_mat4x4_copy(result, mtmp);
 }
 
 static inline void glmm_mat4x4_translate(glmm_mat4x4_t this, const glmm_vec3f_t vec)
