@@ -251,6 +251,7 @@ static inline void glmm_perspective_lh(glmm_mat4x4_t result, float aspect, float
 #define mat4x4_copy glmm_mat4x4_copy
 #define mat4x4_print glmm_mat4x4_print
 #define mat4x4_mul glmm_mat4x4_mul
+#define mat4x4_xmul glmm_mat4x4_xmul
 #define mat4x4_translate glmm_mat4x4_translate
 #define mat4x4_rotate glmm_mat4x4_rotate
 #define mat4x4_scale glmm_mat4x4_scale
