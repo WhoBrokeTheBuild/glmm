@@ -74,7 +74,8 @@ static inline void glmm_mat4x4_translate(glmm_mat4x4_t this, const glmm_vec3f_t 
     glmm_vec4f_xmuls(tmpa, this[0], vec[0]);
     glmm_vec4f_xmuls(tmpb, this[1], vec[1]);
     glmm_vec4f_xmuls(tmpc, this[2], vec[2]);
-    glmm_vec4f_xadd(this[3], tmpa, tmpb);
+    glmm_vec4f_add(this[3], tmpa);
+    glmm_vec4f_add(this[3], tmpb);
     glmm_vec4f_add(this[3], tmpc);
 }
 
