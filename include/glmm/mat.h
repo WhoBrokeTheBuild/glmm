@@ -3,7 +3,7 @@
 
 #include "vec.h"
 #include <string.h>
-
+/*
 #define GLMM_MAT(W, H)                                                                                         \
     typedef glmm_vec##W##f_t glmm_mat##W##x##H##_t[H];                                                         \
                                                                                                                \
@@ -258,5 +258,5 @@ static inline void glmm_perspective_lh(glmm_mat4x4_t result, float aspect, float
 #define mat4x4_scale glmm_mat4x4_scale
 
 #endif // GLMM_NO_SHORT_DEFINES
-
+*/
 #endif // GLMM_MAT_H

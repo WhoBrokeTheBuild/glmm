@@ -86,5 +86,4 @@
 // golden ratio constant
 #define GLMM_GOLDEN_RATIO (1.61803398874989484820458683436563811)
 
-
 #endif // GLMM_CONST_H

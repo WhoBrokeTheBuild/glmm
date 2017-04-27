@@ -10,12 +10,13 @@
 #define GLMM_COORDINATE_SYSTEM GLM_RIGHT_HANDED
 #endif // GLMM_FORCE_LEFT_HANDED
 
-#define GLMM_VER_STRING "0.0.2"
+#define GLMM_VER_STRING "0.1.0"
 
 #include "const.h"
-#include "func.h"
+//#include "func.h"
+//#include "mat.h"
+//#include "plat.h"
+//#include "quat.h"
 #include "vec.h"
-#include "mat.h"
-#include "quat.h"
 
 #endif // GLMM_H
