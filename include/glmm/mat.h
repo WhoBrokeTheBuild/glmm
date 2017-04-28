@@ -2,65 +2,74 @@
 #define GLMM_MAT_H
 
 #include "vec.h"
-#include <string.h>
-/*
-#define GLMM_MAT(W, H)                                                                                         \
-    typedef glmm_vec##W##f_t glmm_mat##W##x##H##_t[H];                                                         \
-                                                                                                               \
-    static inline void glmm_mat##W##x##H##_init(glmm_mat##W##x##H##_t this, float value)                       \
-    {                                                                                                          \
-        int i, j;                                                                                              \
-        for (i = 0; i < H; ++i)                                                                                \
-            for (j = 0; j < W; ++j)                                                                            \
-            {                                                                                                  \
-                this[i][j] = (i == j ? value : 0.0f);                                                          \
-            }                                                                                                  \
-    }                                                                                                          \
-                                                                                                               \
-    static inline void glmm_mat##W##x##H##_copy(glmm_mat##W##x##H##_t this, const glmm_mat##W##x##H##_t other) \
-    {                                                                                                          \
-        int i;                                                                                                 \
-        for (i = 0; i < H; ++i)                                                                                \
-        {                                                                                                      \
-            glmm_vec##W##f_copy(this[i], other[i]);                                                            \
-        }                                                                                                      \
-    }                                                                                                          \
-                                                                                                               \
-    static inline void glmm_mat##W##x##H##_print(glmm_mat##W##x##H##_t this)                                   \
-    {                                                                                                          \
-        int i;                                                                                                 \
-        printf("[ ");                                                                                          \
-        for (i = 0; i < H; ++i)                                                                                \
-        {                                                                                                      \
-            glmm_vec##W##f_print(this[i]);                                                                     \
-            if (i != H - 1)                                                                                    \
-                printf(", ");                                                                                  \
-        }                                                                                                      \
-        printf(" ]");                                                                                          \
+#include <math.h> /* for sqrt */
+#include <stdbool.h> /* for true, false */
+#include <stdio.h> /* for printf */
+#include <string.h> /* for memcpy */
+
+#define GLMM_MAT(W, H) \
+    GLMM_MAT_IMP(W, H, glmm_mat##W##x##H, glmm_mat##W##x##H##_t)
+
+#define GLMM_MAT_IMP(W, H, PREFIX, MATTYPE)                                 \
+                                                                            \
+    typedef union {                                                         \
+        float data[W][H];                                                   \
+        vec##W##f_t cols[W];                                                \
+    } MATTYPE;                                                              \
+                                                                            \
+    static inline void PREFIX##_init(MATTYPE * this, float value)           \
+    {                                                                       \
+        int i, j;                                                           \
+        for (i = 0; i < H; ++i)                                             \
+            for (j = 0; j < W; ++j)                                         \
+            {                                                               \
+                this->data[i][j] = (i == j ? value : 0.0f);                 \
+            }                                                               \
+    }                                                                       \
+                                                                            \
+    static inline void PREFIX##_copy(MATTYPE * this, const MATTYPE * other) \
+    {                                                                       \
+        memcpy(this, other, sizeof(MATTYPE));                               \
+    }                                                                       \
+                                                                            \
+    static inline void PREFIX##_print(MATTYPE * this)                       \
+    {                                                                       \
+        int i;                                                              \
+        printf("[\n");                                                      \
+        for (int y = 0; y < H; ++y)                                         \
+        {                                                                   \
+            printf("[ ");                                                   \
+            for (int x = 0; x < W; ++x)                                     \
+            {                                                               \
+                printf("%.3f%s", this->data[y][x], (x == W ? "" : ", "));   \
+            }                                                               \
+            printf(" ]");                                                   \
+        }                                                                   \
+        printf("]");                                                        \
     }
 
 GLMM_MAT(2, 2);
 GLMM_MAT(3, 3);
 GLMM_MAT(4, 4);
 
-static inline void glmm_mat4x4_xmul(glmm_mat4x4_t result, const glmm_mat4x4_t this, const glmm_mat4x4_t other)
+static inline void glmm_mat4x4_xmul(glmm_mat4x4_t * result, const glmm_mat4x4_t * this, const glmm_mat4x4_t * other)
 {
     int i;
     glmm_mat4x4_t mtmp;
     glmm_vec4f_t vtmp1, vtmp2, vtmp3, vtmp4;
 
-    glmm_mat4x4_init(mtmp, 0.0f);
+    glmm_mat4x4_init(&mtmp, 0.0f);
     for (i = 0; i < 4; ++i)
     {
-        glmm_vec4f_xmuls(vtmp1, this[0], other[i][0]);
-        glmm_vec4f_xmuls(vtmp2, this[1], other[i][1]);
-        glmm_vec4f_xmuls(vtmp3, this[2], other[i][2]);
-        glmm_vec4f_xmuls(vtmp4, this[3], other[i][3]);
-        glmm_vec4f_xadd(mtmp[i], vtmp1, vtmp2);
-        glmm_vec4f_add(mtmp[i], vtmp3);
-        glmm_vec4f_add(mtmp[i], vtmp4);
+        glmm_vec4f_xmuls(&vtmp1, &(this->cols[0]), other->data[i][0]);
+        glmm_vec4f_xmuls(&vtmp2, &(this->cols[1]), other->data[i][1]);
+        glmm_vec4f_xmuls(&vtmp3, &(this->cols[2]), other->data[i][2]);
+        glmm_vec4f_xmuls(&vtmp4, &(this->cols[3]), other->data[i][3]);
+        glmm_vec4f_xadd(mtmp->cols[i], &vtmp1, &vtmp2);
+        glmm_vec4f_add(&mtmp->cols[i], &vtmp3);
+        glmm_vec4f_add(&mtmp->cols[i], &vtmp4);
     }
-    glmm_mat4x4_copy(result, mtmp);
+    glmm_mat4x4_copy(result, &mtmp);
 }
 
 static inline void glmm_mat4x4_mul(glmm_mat4x4_t this, const glmm_mat4x4_t other)
@@ -133,97 +142,97 @@ static inline void glmm_mat4x4_scale(glmm_mat4x4_t this, const glmm_vec3f_t scal
     }
 }
 
-static inline void glmm_look_at_rh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
+static inline void glmm_look_at_rh(glmm_mat4x4_t * result, const glmm_vec3f_t * eye, const glmm_vec3f_t * center, const glmm_vec3f_t * up)
 {
     glmm_vec3f_t f, s, u;
 
-    glmm_vec3f_xsub(f, center, eye);
-    glmm_vec3f_norm(f);
+    glmm_vec3f_xsub(&f, center, eye);
+    glmm_vec3f_norm(&f);
 
-    glmm_vec3f_xcross(s, f, up);
-    glmm_vec3f_norm(s);
+    glmm_vec3f_xcross(&s, &f, up);
+    glmm_vec3f_norm(&s);
 
-    glmm_vec3f_xcross(u, s, f);
+    glmm_vec3f_xcross(&u, &s, &f);
 
     glmm_mat4x4_init(result, 1.0f);
-    result[0][0] = s[0];
-    result[1][0] = s[1];
-    result[2][0] = s[2];
-    result[0][1] = u[0];
-    result[1][1] = u[1];
-    result[2][1] = u[2];
-    result[0][2] = -f[0];
-    result[1][2] = -f[1];
-    result[2][2] = -f[2];
-    result[3][0] = -glmm_vec3f_dot(s, eye);
-    result[3][1] = -glmm_vec3f_dot(u, eye);
-    result[3][2] = glmm_vec3f_dot(f, eye);
+    result->data[0][0] = s->data[0];
+    result->data[1][0] = s->data[1];
+    result->data[2][0] = s->data[2];
+    result->data[0][1] = u->data[0];
+    result->data[1][1] = u->data[1];
+    result->data[2][1] = u->data[2];
+    result->data[0][2] = -f->data[0];
+    result->data[1][2] = -f->data[1];
+    result->data[2][2] = -f->data[2];
+    result->data[3][0] = -glmm_vec3f_dot(&s, eye);
+    result->data[3][1] = -glmm_vec3f_dot(&u, eye);
+    result->data[3][2] = glmm_vec3f_dot(&f, eye);
 }
 
 static inline void glmm_look_at_lh(glmm_mat4x4_t result, const glmm_vec3f_t eye, const glmm_vec3f_t center, const glmm_vec3f_t up)
 {
     glmm_vec3f_t f, s, u;
 
-    glmm_vec3f_xsub(f, center, eye);
-    glmm_vec3f_norm(f);
+    glmm_vec3f_xsub(&f, center, eye);
+    glmm_vec3f_norm(&f);
 
-    glmm_vec3f_xcross(s, up, f);
-    glmm_vec3f_norm(s);
+    glmm_vec3f_xcross(&s, up, &f);
+    glmm_vec3f_norm(&s);
 
-    glmm_vec3f_xcross(u, f, s);
+    glmm_vec3f_xcross(&u, &f, &s);
 
     glmm_mat4x4_init(result, 1.0f);
-    result[0][0] = s[0];
-    result[1][0] = s[1];
-    result[2][0] = s[2];
-    result[0][1] = u[0];
-    result[1][1] = u[1];
-    result[2][1] = u[2];
-    result[0][2] = f[0];
-    result[1][2] = f[1];
-    result[2][2] = f[2];
-    result[3][0] = -glmm_vec3f_dot(s, eye);
-    result[3][1] = -glmm_vec3f_dot(u, eye);
-    result[3][2] = -glmm_vec3f_dot(f, eye);
+    result->data[0][0] = s->data[0];
+    result->data[1][0] = s->data[1];
+    result->data[2][0] = s->data[2];
+    result->data[0][1] = u->data[0];
+    result->data[1][1] = u->data[1];
+    result->data[2][1] = u->data[2];
+    result->data[0][2] = f->data[0];
+    result->data[1][2] = f->data[1];
+    result->data[2][2] = f->data[2];
+    result->data[3][0] = -glmm_vec3f_dot(&s, eye);
+    result->data[3][1] = -glmm_vec3f_dot(&u, eye);
+    result->data[3][2] = -glmm_vec3f_dot(&f, eye);
 }
 
-static inline void glmm_perspective_rh(glmm_mat4x4_t result, float aspect, float near, float far, float fov)
+static inline void glmm_perspective_rh(glmm_mat4x4_t * result, float aspect, float near, float far, float fov)
 {
     //CHECK(abs(aspect - EPSILON) > 0, "Bad aspect?")
 
     float tan_half_fov = tanf(fov * 0.5f);
 
     glmm_mat4x4_init(result, 0.0f);
-    result[0][0] = 1.0f / (aspect * tan_half_fov);
-    result[1][1] = 1.0f / tan_half_fov;
-    result[2][3] = -1.0f;
+    result->data[0][0] = 1.0f / (aspect * tan_half_fov);
+    result->data[1][1] = 1.0f / tan_half_fov;
+    result->data[2][3] = -1.0f;
 
     // #if clip space?
     // result[2][2] = far / (near - far);
     // result[3][2] = -(far * near) / (far - near);
     // #else
-    result[2][2] = -(far + near) / (far - near);
-    result[3][2] = -(2.0f * far * near) / (far - near);
+    result->data[2][2] = -(far + near) / (far - near);
+    result->data[3][2] = -(2.0f * far * near) / (far - near);
     // #endif
 }
 
-static inline void glmm_perspective_lh(glmm_mat4x4_t result, float aspect, float near, float far, float fov)
+static inline void glmm_perspective_lh(glmm_mat4x4_t * result, float aspect, float near, float far, float fov)
 {
     //CHECK(abs(aspect - EPSILON) > 0, "Bad aspect?");
 
     float tan_half_fov = tanf(fov * 0.5f);
 
     glmm_mat4x4_init(result, 0.0f);
-    result[0][0] = 1.0f / (aspect * tan_half_fov);
-    result[1][1] = 1.0f / tan_half_fov;
-    result[2][3] = 1.0f;
+    result->data[0][0] = 1.0f / (aspect * tan_half_fov);
+    result->data[1][1] = 1.0f / tan_half_fov;
+    result->data[2][3] = 1.0f;
 
     // #if clip space?
     // result[2][2] = far / (far - near);
     // result[3][2] = -(far * near) / (far - near);
     // #else
-    result[2][2] = (far + near) / (far - near);
-    result[3][2] = -(2.0f * far * near) / (far - near);
+    result->data[2][2] = (far + near) / (far - near);
+    result->data[3][2] = -(2.0f * far * near) / (far - near);
     // #endif
 }
 
@@ -235,7 +244,7 @@ static inline void glmm_perspective_lh(glmm_mat4x4_t result, float aspect, float
 #define glmm_perspective glmm_perspective_rh
 #endif // GLMM_COORDINATE_SYSTEM == GLMM_LEFT_HANDED
 
-#ifndef GLMM_NO_SHORT_DEFINES
+#if !defined(GLMM_NO_SHORT_DEFINES)
 
 #define mat2x2_t glmm_mat2x2_t
 #define mat2x2_init glmm_mat2x2_init
@@ -257,6 +266,6 @@ static inline void glmm_perspective_lh(glmm_mat4x4_t result, float aspect, float
 #define mat4x4_rotate glmm_mat4x4_rotate
 #define mat4x4_scale glmm_mat4x4_scale
 
-#endif // GLMM_NO_SHORT_DEFINES
-*/
+#endif // !defined(GLMM_NO_SHORT_DEFINES)
+
 #endif // GLMM_MAT_H

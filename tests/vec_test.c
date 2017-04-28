@@ -2,11 +2,11 @@
 #include <glmm/glmm.h>
 #include <stdlib.h>
 
-START_TEST(test_vec_set)
+START_TEST(test_vec_init)
 {
     {
         glmm_vec2i_t a;
-        glmm_vec2i_set(&a, 0);
+        glmm_vec2i_init(&a, 0);
         ck_assert(a.data[0] == 0);
         ck_assert(a.data[1] == 0);
     }
@@ -157,7 +157,7 @@ Suite *vec_suite()
     s = suite_create("vec");
 
     tc_init = tcase_create("init");
-    tcase_add_test(tc_init, test_vec_set);
+    tcase_add_test(tc_init, test_vec_init);
     tcase_add_test(tc_init, test_vec_initializer_list);
     suite_add_tcase(s, tc_init);
 

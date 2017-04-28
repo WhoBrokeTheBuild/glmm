@@ -37,8 +37,8 @@ SET(
   "src/glmm.c"
 )
 
-ADD_LIBRARY(
-  glmm
+ADD_EXECUTABLE(
+  glmm_build
   ${GLMM_INCLUDE}
   ${GLMM_SRC}
 )
@@ -54,14 +54,14 @@ IF(CHECK_FOUND)
   )
   TARGET_LINK_LIBRARIES(vec_test ${CHECK_LIBRARY})
 
-  #ADD_EXECUTABLE(
-  #  quat_test
-  #  tests/quat_test.c
-  #)
-  #TARGET_LINK_LIBRARIES(quat_test ${CHECK_LIBRARY})
+  ADD_EXECUTABLE(
+    quat_test
+    tests/quat_test.c
+  )
+  TARGET_LINK_LIBRARIES(quat_test ${CHECK_LIBRARY})
 
   ADD_TEST("Vec" vec_test)
-  #ADD_TEST(quat_test quat_test)
+  ADD_TEST("Quat" quat_test)
 ENDIF()
 
 SOURCE_GROUP("Sources" FILES ${GLMM_INCLUDE} ${GLMM_SRC})

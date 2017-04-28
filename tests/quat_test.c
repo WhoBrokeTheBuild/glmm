@@ -5,12 +5,11 @@
 START_TEST(test_angle_axis)
 {
     {
-        glmm_vec3f_t v = { 1.0f, 0.0f, 0.0f };
-        glmm_vec3f_t u = { 0.0f, 1.0f, 0.0f };
-        glmm_quat_t q;
-        float angle;
-        glmm_angle_axis(q, v, u);
-        // angle = glmm_quat_angle(q);
+        //glmm_vec3f_t v = {{ 1.0f, 0.0f, 0.0f }};
+        //glmm_quat_t q;
+        //float angle;
+        //glmm_angle_axis(&q, angle, &v);
+        // angle = glmm_quat_angle(&q);
         // ck_assert(GLMM_ABS(angle - GLMM_PI * 0.5f) >= GLMM_EPSILON);
     }
 }
@@ -24,7 +23,7 @@ Suite *vec_suite()
     s = suite_create("quat");
 
     tc_rotate = tcase_create("rotation");
-    tcase_add_test(tc_init, test_angle_axis);
+    tcase_add_test(tc_rotate, test_angle_axis);
     suite_add_tcase(s, tc_rotate);
 
     return s;

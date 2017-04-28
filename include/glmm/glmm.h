@@ -13,10 +13,10 @@
 #define GLMM_VER_STRING "0.1.0"
 
 #include "const.h"
-//#include "func.h"
-//#include "mat.h"
-//#include "plat.h"
-//#include "quat.h"
+#include "func.h"
+#include "mat.h"
+#include "plat.h"
+#include "quat.h"
 #include "vec.h"
 
 #endif // GLMM_H

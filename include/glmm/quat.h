@@ -18,7 +18,7 @@ static inline void glmm_quat_init(glmm_quat_t * this, float value)
 
 static inline void glmm_quat_xcross(glmm_quat_t * result, glmm_quat_t * this, const glmm_quat_t * other)
 {
-    glmm_quat_t * tmp;
+    glmm_quat_t tmp;
     tmp.w = this->w * other->w - this->x * other->x - this->y * other->y - this->z * other->z;
     tmp.x = this->w * other->x + this->x * other->w + this->y * other->z - this->z * other->y;
     tmp.y = this->w * other->y + this->y * other->w + this->z * other->x - this->x * other->z;
@@ -33,35 +33,35 @@ static inline void glmm_quat_cross(glmm_quat_t * this, const glmm_quat_t * other
 
 static inline void glmm_quat_print(const glmm_quat_t * this)
 {
-    printf("[ %f, %f, %f, %f ]", this[3], this[0], this[1], this[2]);
+    printf("[ %f, %f, %f, %f ]", this->w, this->x, this->y, this->z);
 }
 
-static inline void glmm_angle_axis(glmm_quat_t * result, float angle, glmm_vec3f_t vec)
+static inline void glmm_angle_axis(glmm_quat_t * this, float angle, const glmm_vec3f_t * vec)
 {
     float s = sinf(angle * 0.5f);
 
-    result[3] = cosf(angle * 0.5f);
-    result[0] = vec[0] * s;
-    result[1] = vec[1] * s;
-    result[2] = vec[2] * s;
+    this->w = cosf(angle * 0.5f);
+    this->x = vec->x * s;
+    this->y = vec->y * s;
+    this->z = vec->z * s;
 }
 
-static inline void glmm_rotate_vec3f_quat(glmm_vec3f_t result, const glmm_vec3f_t vec, const glmm_quat_t * quat)
+static inline void glmm_rotate_vec3f_quat(glmm_vec3f_t * result, const glmm_vec3f_t * vec, const glmm_quat_t * quat)
 {
-    glmm_vec3f_t quatvec = { quat[0], quat[1], quat[2] };
+    glmm_vec3f_t quatvec = { { quat->x, quat->y, quat->z } };
     glmm_vec3f_t tmp, uv, uuv;
-    glmm_vec3f_xcross(uv, quatvec, vec);
-    glmm_vec3f_xcross(uuv, quatvec, uv);
+    glmm_vec3f_xcross(&uv, &quatvec, vec);
+    glmm_vec3f_xcross(&uuv, &quatvec, &uv);
 
-    glmm_vec3f_xmuls(tmp, uv, quat[3]);
-    glmm_vec3f_add(tmp, uuv);
-    glmm_vec3f_muls(tmp, 2.0f);
-    glmm_vec3f_xadd(result, tmp, vec);
+    glmm_vec3f_xmuls(&tmp, &uv, quat->w);
+    glmm_vec3f_add(&tmp, &uuv);
+    glmm_vec3f_muls(&tmp, 2.0f);
+    glmm_vec3f_xadd(result, &tmp, vec);
 }
 
-#ifndef GLMM_NO_SHORT_DEFINES
+#if !defined(GLMM_NO_SHORT_DEFINES)
 
-#define quat_t glmm_quat_t *
+#define quat_t glmm_quat_t
 #define quat_init glmm_quat_init
 #define quat_copy glmm_quat_copy
 #define quat_cross glmm_quat_cross
@@ -73,6 +73,6 @@ static inline void glmm_rotate_vec3f_quat(glmm_vec3f_t result, const glmm_vec3f_
 #define angle_axis glmm_angle_axis
 #define rotate_vec3f_quat glmm_rotate_vec3f_quat
 
-#endif // GLMM_NO_SHORT_DEFINES
+#endif // !defined(GLMM_NO_SHORT_DEFINES)
 
 #endif // GLMM_QUAT_H
