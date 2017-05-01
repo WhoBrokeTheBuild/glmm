@@ -101,7 +101,7 @@ GLMM_VEC4(u, unsigned int, "%u")
 
 #if !defined(GLMM_NO_SHORT_DEFINES)
 
-#define vec2f_t glmm_vec2f_t
+typedef glmm_vec2f_t vec2f_t;
 #define vec2f_init glmm_vec2f_init
 #define vec2f_copy glmm_vec2f_copy
 #define vec2f_eq glmm_vec2f_eq
@@ -128,7 +128,7 @@ GLMM_VEC4(u, unsigned int, "%u")
 #define vec2f_dot glmm_vec2f_dot
 #define vec2f_print glmm_vec2f_print
 
-#define vec2i_t glmm_vec2i_t
+typedef glmm_vec2i_t vec2i_t;
 #define vec2i_init glmm_vec2i_init
 #define vec2i_copy glmm_vec2i_copy
 #define vec2i_eq glmm_vec2i_eq
@@ -155,7 +155,7 @@ GLMM_VEC4(u, unsigned int, "%u")
 #define vec2i_dot glmm_vec2i_dot
 #define vec2i_print glmm_vec2i_print
 
-#define vec2u_t glmm_vec2u_t
+typedef glmm_vec2u_t vec2u_t;
 #define vec2u_init glmm_vec2u_init
 #define vec2u_copy glmm_vec2u_copy
 #define vec2u_eq glmm_vec2u_eq
@@ -182,7 +182,7 @@ GLMM_VEC4(u, unsigned int, "%u")
 #define vec2u_dot glmm_vec2u_dot
 #define vec2u_print glmm_vec2u_print
 
-#define vec3f_t glmm_vec3f_t
+typedef glmm_vec3f_t vec3f_t;
 #define vec3f_init glmm_vec3f_init
 #define vec3f_copy glmm_vec3f_copy
 #define vec3f_eq glmm_vec3f_eq
@@ -211,7 +211,7 @@ GLMM_VEC4(u, unsigned int, "%u")
 #define vec3f_xcross glmm_vec3f_xcross
 #define vec3f_print glmm_vec3f_print
 
-#define vec3i_t glmm_vec3i_t
+typedef glmm_vec3i_t vec3i_t;
 #define vec3i_init glmm_vec3i_init
 #define vec3i_copy glmm_vec3i_copy
 #define vec3i_eq glmm_vec3i_eq
@@ -240,7 +240,7 @@ GLMM_VEC4(u, unsigned int, "%u")
 #define vec3i_xcross glmm_vec3i_xcross
 #define vec3i_print glmm_vec3i_print
 
-#define vec3u_t glmm_vec3u_t
+typedef glmm_vec3u_t vec3u_t;
 #define vec3u_init glmm_vec3u_init
 #define vec3u_copy glmm_vec3u_copy
 #define vec3u_eq glmm_vec3u_eq
@@ -298,7 +298,7 @@ GLMM_VEC4(u, unsigned int, "%u")
 #define vec4f_xcross glmm_vec4f_xcross
 #define vec4f_print glmm_vec4f_print
 
-#define vec4i_t glmm_vec4i_t
+typedef glmm_vec4i_t vec4i_t;
 #define vec4i_init glmm_vec4i_init
 #define vec4i_copy glmm_vec4i_copy
 #define vec4i_eq glmm_vec4i_eq
@@ -327,7 +327,7 @@ GLMM_VEC4(u, unsigned int, "%u")
 #define vec4i_xcross glmm_vec4i_xcross
 #define vec4i_print glmm_vec4i_print
 
-#define vec4u_t glmm_vec4u_t
+typedef glmm_vec4u_t vec4u_t;
 #define vec4u_init glmm_vec4u_init
 #define vec4u_copy glmm_vec4u_copy
 #define vec4u_eq glmm_vec4u_eq
