@@ -195,7 +195,7 @@ static inline void glmm_look_at_lh(glmm_mat4x4_t * result, const glmm_vec3f_t * 
     result->data[3][2] = -glmm_vec3f_dot(&f, eye);
 }
 
-static inline void glmm_perspective_rh(glmm_mat4x4_t * result, float aspect, float near, float far, float fov)
+static inline void glmm_perspective_rh(glmm_mat4x4_t * result, float aspect, float vnear, float vfar, float fov)
 {
     //CHECK(abs(aspect - EPSILON) > 0, "Bad aspect?")
 
@@ -207,15 +207,15 @@ static inline void glmm_perspective_rh(glmm_mat4x4_t * result, float aspect, flo
     result->data[2][3] = -1.0f;
 
     // #if clip space?
-    // result[2][2] = far / (near - far);
-    // result[3][2] = -(far * near) / (far - near);
+    // result[2][2] = vfar / (vnear - vfar);
+    // result[3][2] = -(vfar * vnear) / (vfar - vnear);
     // #else
-    result->data[2][2] = -(far + near) / (far - near);
-    result->data[3][2] = -(2.0f * far * near) / (far - near);
+    result->data[2][2] = -(vfar + vnear) / (vfar - vnear);
+    result->data[3][2] = -(2.0f * vfar * vnear) / (vfar - vnear);
     // #endif
 }
 
-static inline void glmm_perspective_lh(glmm_mat4x4_t * result, float aspect, float near, float far, float fov)
+static inline void glmm_perspective_lh(glmm_mat4x4_t * result, float aspect, float vnear, float vfar, float fov)
 {
     //CHECK(abs(aspect - EPSILON) > 0, "Bad aspect?");
 
@@ -227,11 +227,11 @@ static inline void glmm_perspective_lh(glmm_mat4x4_t * result, float aspect, flo
     result->data[2][3] = 1.0f;
 
     // #if clip space?
-    // result[2][2] = far / (far - near);
-    // result[3][2] = -(far * near) / (far - near);
+    // result[2][2] = vfar / (vfar - vnear);
+    // result[3][2] = -(vfar * vnear) / (vfar - vnear);
     // #else
-    result->data[2][2] = (far + near) / (far - near);
-    result->data[3][2] = -(2.0f * far * near) / (far - near);
+    result->data[2][2] = (vfar + vnear) / (vfar - vnear);
+    result->data[3][2] = -(2.0f * vfar * vnear) / (vfar - vnear);
     // #endif
 }
 
