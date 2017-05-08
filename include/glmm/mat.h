@@ -14,7 +14,7 @@
                                                                             \
     typedef union {                                                         \
         float data[W][H];                                                   \
-        vec##W##f_t cols[W];                                                \
+        vec##W##f_t rows[W];                                                \
     } MATTYPE;                                                              \
                                                                             \
     static inline void PREFIX##_init(MATTYPE * this, float value)           \
@@ -51,6 +51,21 @@ GLMM_MAT(2, 2)
 GLMM_MAT(3, 3)
 GLMM_MAT(4, 4)
 
+static inline glmm_vec3f_t glmm_mat3x3_mulv(glmm_mat3x3_t * this, const glmm_vec3f_t * vec)
+{
+    glmm_vec3f_t result;
+    glmm_mat3x3_t tmp;
+
+    glmm_mat3x3_copy(&tmp, this);
+    for (int i = 0; i < 3; ++i)
+    {
+        glmm_vec3f_mul(&tmp.rows[i], vec);
+        result.data[i] = tmp.data[i][0] + tmp.data[i][1] + tmp.data[i][2];
+    }
+
+    return result;
+}
+
 static inline void glmm_mat4x4_xmul(glmm_mat4x4_t * result, const glmm_mat4x4_t * this, const glmm_mat4x4_t * other)
 {
     int i;
@@ -60,13 +75,13 @@ static inline void glmm_mat4x4_xmul(glmm_mat4x4_t * result, const glmm_mat4x4_t 
     glmm_mat4x4_init(&mtmp, 0.0f);
     for (i = 0; i < 4; ++i)
     {
-        glmm_vec4f_xmuls(&vtmp1, &(this->cols[0]), other->data[i][0]);
-        glmm_vec4f_xmuls(&vtmp2, &(this->cols[1]), other->data[i][1]);
-        glmm_vec4f_xmuls(&vtmp3, &(this->cols[2]), other->data[i][2]);
-        glmm_vec4f_xmuls(&vtmp4, &(this->cols[3]), other->data[i][3]);
-        glmm_vec4f_xadd(&mtmp.cols[i], &vtmp1, &vtmp2);
-        glmm_vec4f_add(&mtmp.cols[i], &vtmp3);
-        glmm_vec4f_add(&mtmp.cols[i], &vtmp4);
+        glmm_vec4f_xmuls(&vtmp1, &(this->rows[0]), other->data[i][0]);
+        glmm_vec4f_xmuls(&vtmp2, &(this->rows[1]), other->data[i][1]);
+        glmm_vec4f_xmuls(&vtmp3, &(this->rows[2]), other->data[i][2]);
+        glmm_vec4f_xmuls(&vtmp4, &(this->rows[3]), other->data[i][3]);
+        glmm_vec4f_xadd(&mtmp.rows[i], &vtmp1, &vtmp2);
+        glmm_vec4f_add(&mtmp.rows[i], &vtmp3);
+        glmm_vec4f_add(&mtmp.rows[i], &vtmp4);
     }
     glmm_mat4x4_copy(result, &mtmp);
 }
@@ -76,15 +91,30 @@ static inline void glmm_mat4x4_mul(glmm_mat4x4_t * this, const glmm_mat4x4_t * o
     glmm_mat4x4_xmul(this, this, other);
 }
 
+static inline glmm_vec4f_t glmm_mat4x4_mulv(glmm_mat4x4_t * this, const glmm_vec4f_t * vec)
+{
+    glmm_vec4f_t result;
+    glmm_mat4x4_t tmp;
+
+    glmm_mat4x4_copy(&tmp, this);
+    for (int i = 0; i < 4; ++i)
+    {
+        glmm_vec4f_mul(&tmp.rows[i], vec);
+        result.data[i] = tmp.data[i][0] + tmp.data[i][1] + tmp.data[i][2] + tmp.data[i][3];
+    }
+
+    return result;
+}
+
 static inline void glmm_mat4x4_translate(glmm_mat4x4_t * this, const glmm_vec3f_t * vec)
 {
     glmm_vec4f_t tmpa, tmpb, tmpc;
-    glmm_vec4f_xmuls(&tmpa, &this->cols[0], vec->x);
-    glmm_vec4f_xmuls(&tmpb, &this->cols[1], vec->y);
-    glmm_vec4f_xmuls(&tmpc, &this->cols[2], vec->z);
-    glmm_vec4f_add(&this->cols[3], &tmpa);
-    glmm_vec4f_add(&this->cols[3], &tmpb);
-    glmm_vec4f_add(&this->cols[3], &tmpc);
+    glmm_vec4f_xmuls(&tmpa, &this->rows[0], vec->x);
+    glmm_vec4f_xmuls(&tmpb, &this->rows[1], vec->y);
+    glmm_vec4f_xmuls(&tmpc, &this->rows[2], vec->z);
+    glmm_vec4f_add(&this->rows[3], &tmpa);
+    glmm_vec4f_add(&this->rows[3], &tmpb);
+    glmm_vec4f_add(&this->rows[3], &tmpc);
 }
 
 static inline void glmm_mat4x4_rotate(glmm_mat4x4_t * this, float angle, const glmm_vec3f_t * in_axis)
@@ -121,13 +151,13 @@ static inline void glmm_mat4x4_rotate(glmm_mat4x4_t * this, float angle, const g
 
     for (i = 0; i < 3; ++i)
     {
-        glmm_vec4f_xmuls(&tmpa, &this->cols[0], rotate.data[i][0]);
-        glmm_vec4f_xmuls(&tmpb, &this->cols[1], rotate.data[i][1]);
-        glmm_vec4f_xmuls(&tmpc, &this->cols[2], rotate.data[i][2]);
-        glmm_vec4f_xadd(&result.cols[i], &tmpa, &tmpb);
-        glmm_vec4f_add(&result.cols[i], &tmpc);
+        glmm_vec4f_xmuls(&tmpa, &this->rows[0], rotate.data[i][0]);
+        glmm_vec4f_xmuls(&tmpb, &this->rows[1], rotate.data[i][1]);
+        glmm_vec4f_xmuls(&tmpc, &this->rows[2], rotate.data[i][2]);
+        glmm_vec4f_xadd(&result.rows[i], &tmpa, &tmpb);
+        glmm_vec4f_add(&result.rows[i], &tmpc);
     }
-    glmm_vec4f_copy(&result.cols[3], &this->cols[3]);
+    glmm_vec4f_copy(&result.rows[3], &this->rows[3]);
 
     glmm_mat4x4_copy(this, &result);
 }
@@ -137,7 +167,7 @@ static inline void glmm_mat4x4_scale(glmm_mat4x4_t * this, const glmm_vec3f_t * 
     int i;
     for (i = 0; i < 3; ++i)
     {
-        glmm_vec4f_muls(&this->cols[i], scale->data[i]);
+        glmm_vec4f_muls(&this->rows[i], scale->data[i]);
     }
 }
 
