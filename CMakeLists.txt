@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+list(PREPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 project(glmm)
 
@@ -32,7 +32,7 @@ add_executable(
 target_include_directories(
     glmm_build
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 install(FILES ${GLMM_INCLUDE} DESTINATION include/glmm)
@@ -59,12 +59,10 @@ if(GLMM_BUILD_TESTS)
     add_test("Quat" quat_test)
 endif()
 
-source_group("Sources" FILES ${GLMM_INCLUDE} ${GLMM_SRC})
-
 add_library(glmm INTERFACE)
 
 target_include_directories(
     glmm
     INTERFACE
-        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
